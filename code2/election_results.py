@@ -3,7 +3,7 @@
 In this second pass at our script, we'll start refactoring our code to use functions.
 We'll also introduce a few tests.
 """
-# Download CSV from GDocs
+# Download fake CSV from GDocs
 
 # Parse CSV
 
