@@ -1,10 +1,7 @@
 #!/usr/bin/env python
 """
-A monstrosity of an election results script. Generates statewide results for races, 
-based on county results.
-
-This module bundles together way too much functionality and is near impossible to test,
-beyond eye-balling results.
+In this second pass at the election_results.py script, we chop up the code into
+functions and add a few tests.
 
 USAGE:
 
@@ -13,7 +10,7 @@ USAGE:
 
 OUTPUT:
 
-    Generates summary_results.csv
+    summary_results.csv containing racewide totals for each race/candidate pair.
 
 
 """
