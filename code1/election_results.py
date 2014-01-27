@@ -103,9 +103,15 @@ for race_key, cand_results in results.items():
     cand_totals = []
     for cand_key, results in cand_results.items():
         # Populate a new candidate dict using one set of county results
-        cand = results[0].copy()
-        # Remove all non-candidate entries such as votes, office, district, etc.
-        [cand.pop(key) for key in cand.keys() if key not in ('candidate', 'first_name', 'last_name', 'party', 'party_clean')]
+        cand = {
+            'candidate': results[0]['candidate'],
+            'first_name': results[0]['first_name'],
+            'last_name': results[0]['last_name'],
+            'party': results[0]['party'],
+            'party_clean': results[0]['party_clean'],
+            'winner': '',
+            'margin_of_vic': '',
+        }
         # Calculate candidate total votes
         cand_statewide_total= sum([result['votes'] for result in results])
         cand['votes'] = cand_statewide_total
