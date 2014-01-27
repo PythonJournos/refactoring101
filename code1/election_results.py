@@ -1,7 +1,21 @@
 #!/usr/bin/env python
 """
-A monstrosity of an election results script. Bundles together waaaay too much 
-functionality in a single module.
+A monstrosity of an election results script. Generates statewide results for races, 
+based on county results.
+
+This module bundles together way too much functionality and is near impossible to test,
+beyond eye-balling results.
+
+USAGE:
+
+    python election_results.py
+
+
+OUTPUT:
+
+    Generates summary_results.csv
+
+
 """
 import csv
 import datetime
@@ -124,7 +138,6 @@ for race_key, cand_results in results.items():
         'all_votes': all_votes,
         'tie_race': tie_race,
         'date': result['date'],
-        'county': result['county'],
         'office': result['office_clean'],
         'office_slug': result['office_slug'],
         'district': result['district'],
@@ -132,9 +145,10 @@ for race_key, cand_results in results.items():
     }
 
 
-# Output CSV of results
+# Output CSV of summary results
 outfile = join(dirname(abspath(__file__)), 'summary_results.csv')
 with open(outfile, 'wb') as fh:
+    # We'll limit the output to cleanly parsed, standardized values
     fieldnames = [
         'date',
         'office_slug',
@@ -142,7 +156,6 @@ with open(outfile, 'wb') as fh:
         'last_name',
         'first_name',
         'party_clean',
-        'county',
         'all_votes',
         'votes',
         'vote_pct',
@@ -155,6 +168,5 @@ with open(outfile, 'wb') as fh:
     for race, results in summary.items():
         cands = results.pop('candidates')
         for cand in cands:
-            meta = results.copy()
-            meta.update(cand)
-            writer.writerow(meta)
+            results.update(cand)
+            writer.writerow(results)
