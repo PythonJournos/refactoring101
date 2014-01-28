@@ -2,16 +2,17 @@
 
 ## Overview
 
-This repo contains code samples demonstrating how to transform a complex, linear script into a modular, easier-to-maintain package. Code was written for the *Python: Beyond the Basics* class at [NICAR 2014](http://ire.org/conferences/nicar-2014/). The code uses a small, [fake set of election results](https://docs.google.com/spreadsheet/pub?key=0AhhC0IWaObRqdGFkUW1kUmp2ZlZjUjdTYV9lNFJ5RHc&output=csv) created for demonstration purposes.
+This repo contains code samples demonstrating how to transform a complex, linear script into a modular, easier-to-maintain package. The code is written as a reference for the *Python: Beyond the Basics* class at [NICAR 2014](http://ire.org/conferences/nicar-2014/), but can also work as a stand-alone tutorial.
 
-The project code evolves through four phases, each contained in a numbered *elex* directory. Below are descriptions of each phase, along with related questions and exercises that often anticipate the next phase or set of skills. 
+The tutorial uses a small, [fake set of election results](https://docs.google.com/spreadsheet/pub?key=0AhhC0IWaObRqdGFkUW1kUmp2ZlZjUjdTYV9lNFJ5RHc&output=csv) created for demonstration purposes.
 
-The overarching theme: *As an application or program grows in size, writing readable, testable code can help tame complexity and keep you sane.* We explore how to use Python modules, packages and classes to organize
-code more effectively. We also introduce unit testing as one strategy for writing programs that you can update with confidence.
+Project code evolves through four phases, each contained in a numbered *elex* directory. Below are descriptions of each phase, along with related questions and exercises that often anticipate the next phase or set of skills.
+
+The goal is to demonstrate how to use Python functions, modules, packages and classes to organize code more effectively. We also introduce unit testing as a strategy for writing programs that you can update with confidence. The overarching theme: **_As an application or program grows in size, writing readable code with tests can help tame complexity and keep you sane._**
 
 ## Phase 1 - Spaghetti
 
-We begin with a single, linear script in the _elex1/_ directory. Below are a few reasons why this [code smells](http://en.wikipedia.org/wiki/Code_smell) (well, some might say reeks!):
+We begin with a single, linear script in the _elex1/_ directory. Below are a few reasons why this [code smells](http://en.wikipedia.org/wiki/Code_smell) (some might even say it reeks):
 
 * It's hard to understand. You have to read the entire script before getting a full sense of what it does.
 * It's hard to debug when something goes wrong.
@@ -47,7 +48,7 @@ could be a lot better.
 #### Exercises
 
 * List three ways this code is better than the previous version; and three ways it could be improved.
-* Organize functions in election_results.py into two or more new modules. (Hint: There is no right answer here. [Naming things is hard](http://martinfowler.com/bliki/TwoHardThings.html); aim for directory and file names with short but meaningful names).
+* Organize functions in election_results.py into two or more new modules. (Hint: There is no right answer here. [Naming things is hard](http://martinfowler.com/bliki/TwoHardThings.html); aim for directory and file names that are short but meaningful to a normal human).
 
 ## Phase 3 - Modularize
 
@@ -88,6 +89,7 @@ $ export PYTHONPATH=`pwd`:$PYTHONPATH
 
 #### Questions
 
+* Do you _like_ the package and module names? How might you have named them differently?
 * Why is it necessary to add the _refactoring101/_ directory to your PYTHONPATH?
 * What are three ways to update the PYTHONPATH?
 * What is a class? What is a method? 
@@ -97,9 +99,9 @@ $ export PYTHONPATH=`pwd`:$PYTHONPATH
 
 * Look at the original results data, and model out some
   classes and methods to reflect "real-world" entities in the realm of elections.
-* Examine functions in _lib/_ and try assigning three functions to 
-  one of your new classes. Try extracting logic from functions to create
-  new methods on your classes (e.g., Election.margin_of_victory)
+* Examine functions in _lib/_ and try assigning three functions to one of your new classes.
+* Try extracting logic from the _summarize_ function and re-implement it as a method on one of your classes.
+
 
 ## Phase 4 - Model Your Domain
 
