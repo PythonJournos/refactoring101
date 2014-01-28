@@ -4,8 +4,9 @@
 
 This repo contains code samples demonstrating how to transform a complex, linear script into a modular, easier-to-maintain package. Code was written for the *Python: Beyond the Basics* class at [NICAR 2014](http://ire.org/conferences/nicar-2014/). The code uses a small, [fake set of election results](https://docs.google.com/spreadsheet/pub?key=0AhhC0IWaObRqdGFkUW1kUmp2ZlZjUjdTYV9lNFJ5RHc&output=csv) created for demonstration purposes.
 
-The project code evolves through four phases, each contained in a numbered *elex* directory. Below are notes,
-questions and exercises related to each phase. The overarching theme: *As an application or program grows in size, writing readable, testable code can help tame complexity and keep you sane.* We explore how to use Python modules, packages and classes to organize
+The project code evolves through four phases, each contained in a numbered *elex* directory. Below are descriptions of each phase, along with related questions and exercises that often anticipate the next phase or set of skills. 
+
+The overarching theme: *As an application or program grows in size, writing readable, testable code can help tame complexity and keep you sane.* We explore how to use Python modules, packages and classes to organize
 code more effectively. We also introduce unit testing as one strategy for writing programs that you can update with confidence.
 
 ## Phase 1 - Spaghetti
@@ -43,16 +44,14 @@ could be a lot better.
 * What is a package?
 * What is *\__init__.py* and why do we use it?
 
-####Exercises
+#### Exercises
 
 * List three ways this code is better than the previous version; and three ways it could be improved.
-* There is a bug in the percentage function, related to when a
-candidate receives zero votes. Try capturing the bug in a new test case,
-then update the percentage function so that it properly handles this edge case.
+* Organize functions in election_results.py into two or more new modules. (Hint: There is no right answer here. [Naming things is hard](http://martinfowler.com/bliki/TwoHardThings.html); aim for directory and file names with short but meaningful names).
 
 ## Phase 3 - Modularize
 
-In this third phase, we chop up our origin election_results.py module into a legitimate 
+In this third phase, we chop up our original election_results.py module into a legitimate 
 Python package. The new (hopefully self-explanatory) directory structure looks like below:
 
 ```
@@ -72,15 +71,15 @@ elex3/
 
 ```
 
-* *_lib/_* contains re-usable bits of code are placed in modules in the _lib/_ directory.
-* *_scripts/_* contains...well..scripts that leverage our re-usable code.
-* *_tests/_* contains tests for re-usable bits of code.
+* **_lib/_** contains re-usable bits of code.
+* **_scripts/_** contains...well..scripts that leverage our re-usable code.
+* **_tests/_** contains tests for re-usable bits of code.
 
 Note that we did not change any of our functions. Mostly we just re-organized them into new modules, 
-with the goal of grouping related bits of logic in common-sense locations.
+with the goal of grouping related bits of logic in common-sense locations. We also migrated
+imports and "namespaced" imports of our own re-usable code under _elex3.lib_.
 
-One significant change: You must add the _refactoring101_ directory to your _PYTHONPATH_
-before any of the tests or script will work. 
+**Important**: You must add the _refactoring101_ directory to your _PYTHONPATH_ before any of the tests or script will work. 
 
 ```bash
 $ cd /path/to/refactoring101
