@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from .election_results import clean_office, clean_party, percent
+from elex3.lib.parser import clean_office, clean_party
 
 
 class TestDataCleaners(TestCase):
@@ -23,10 +23,3 @@ class TestDataCleaners(TestCase):
     def test_clean_party_others(self):
         self.assertEquals(clean_party('Green'), 'GREEN')
 
-
-
-class TestPercentFunc(TestCase):
-
-    def test_percent(self):
-        "test_percent returns percentage as string"
-        self.assertEquals(percent(50, 100), '50')

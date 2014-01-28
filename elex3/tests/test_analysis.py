@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from unittest import TestCase
 
 from elex3.lib.analysis import percent

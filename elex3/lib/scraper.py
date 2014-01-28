@@ -16,4 +16,4 @@ def download_results(path):
 
     """
     url = "https://docs.google.com/spreadsheet/pub?key=0AhhC0IWaObRqdGFkUW1kUmp2ZlZjUjdTYV9lNFJ5RHc&output=csv"
-    urllib.urlretrieve(url, path)
+    urlretrieve(url, path)

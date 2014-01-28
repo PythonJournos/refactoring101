@@ -15,6 +15,7 @@ OUTPUT:
 
 """
 from os.path import abspath, dirname, join
+import csv
 
 from elex3.lib.analysis import summarize
 from elex3.lib.parser import parse_and_clean
@@ -33,11 +34,10 @@ def main():
 def write_csv(summary):
     """Generates CSV from summary election results data
 
-    CSV is written to 'summary_results.csv' file, inside same directory
-    as this module.
+    CSV is written to 'summary_results.csv' file in elex3/ directory.
 
     """
-    outfile = join(dirname(abspath(__file__)), 'summary_results.csv')
+    outfile = join(dirname(dirname(abspath(__file__))), 'summary_results.csv')
     with open(outfile, 'wb') as fh:
         # Limit output to cleanly parsed, standardized values
         fieldnames = [
