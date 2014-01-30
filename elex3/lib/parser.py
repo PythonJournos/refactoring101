@@ -23,7 +23,6 @@ def parse_and_clean(path):
     results = defaultdict(dict)
 
     # Initial data clean-up
-    #import ipdb;ipdb.set_trace()
     for row in reader:
         # Perform some data clean-ups and conversions
         row['last_name'], row['first_name'] = [name.strip() for name in row['candidate'].split(',')]

@@ -211,7 +211,6 @@ def write_csv(summary):
         ]
         writer = csv.DictWriter(fh, fieldnames, extrasaction='ignore', quoting=csv.QUOTE_MINIMAL)
         writer.writeheader()
-        #import ipdb;ipdb.set_trace()
         for race, results in summary.items():
             cands = results.pop('candidates')
             for cand in cands:
