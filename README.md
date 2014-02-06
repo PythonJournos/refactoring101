@@ -95,6 +95,8 @@ $ export PYTHONPATH=`pwd`:$PYTHONPATH
 * What are three ways to update the PYTHONPATH?
 * What is a class? What is a method? 
 * What is an object in Python? What is an instance?
+* What is the __init__ method on a class used for?
+* What is _self_ and how does it relate to class instances?
 
 #### Exercises
 
@@ -107,4 +109,61 @@ $ export PYTHONPATH=`pwd`:$PYTHONPATH
 
 ## Phase 4 - Model Your Domain
 
-TODO: Create models.py with Election, Race, Candidate classes.
+In this section, we create classes that map to the real world of
+elections. These classes are intended to serve as a more intuitive container 
+for data transformations and complex bits of logic currently scattered across our application.
+
+The goal is to [hide complexity](http://en.wikipedia.org/wiki/Encapsulation_(object-oriented_programming) behind simple interfaces. 
+
+We perform these refactorings in a step-by-step fashion, and
+we'll attempt to [write tests *before* the actual code](http://en.wikipedia.org/wiki/Test-driven_development).
+
+So how do we start modeling our domain? We know we have races and candidates, who have
+collections of county results
+
+Let's start by creating these classes with some simple behavior.
+Gradually, we'll build these classes up to the point that they provide
+all the data and methods we need to produce our final summary final.
+
+### Candidate model
+
+Candidates have a name, party and county election results. The candidate model also seems like a natural
+place for some of the computations that now live in _lib/parser.py_ and _lib/analysis.py_:
+
+* total candiate votes from all counties
+* candidate vote percentage
+* winner status
+* margin of victory, if appropriate
+
+But before we dive into migrating computed values, let's start with the basics.
+
+We've decided to store our new election classes in a models.py (Django users, this should be familiar).
+Therefore, we'll store tests in a new _test_models.py_ module.
+
+We can run those tests by doing the following:
+```bash
+nosetests -v tests/test_models.py
+```
+
+*Add name handling*
+
+* Create test_models.py
+* Add test for Candidate name handling
+* Run test to see it fail 
+* Write a Candidate class that exposes first and last name attributes
+* Run test to see it pass
+
+_Post-refacotring code_
+
+*Add party attribute*
+
+* Add test for Candidate.party
+* Run test to see it fail
+* Add party
+* Run test and see it pass
+
+
+#### Exercises
+
+* Re-implement the Candidate method to use a property instead of the
+  clean_name method on initialization.
