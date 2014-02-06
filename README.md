@@ -146,9 +146,9 @@ Now let's start writing some test-driven code.
 *Add name bits*
 
 * Create test_models.py
-* Add test for Candidate name handling
-* Run test to see it fail ([elex4.1.0](https://github.com/PythonJournos/refactoring101/tree/elex4.1.0))
-* Write a Candidate class that exposes first and last name attributes ([elex4.1.1](https://github.com/PythonJournos/refactoring101/tree/elex4.1.1))
+* Add test for Candidate name handling ([elex4.1.0](https://github.com/PythonJournos/refactoring101/blob/elex4.1.0/elex4/tests/test_models.py))
+* Run test to see it fail 
+* Write a Candidate class that exposes first and last name attributes ([elex4.1.1](https://github.com/PythonJournos/refactoring101/blob/elex4.1.1/elex4/lib/models.py))
 * Run test to see it pass
 
 *Add party*
