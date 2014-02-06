@@ -30,12 +30,11 @@ def parse_and_clean(path):
         row['office_clean'], row['office_slug'], row['district'] = clean_office(row['office'])
         row['votes'] = int(row['votes'])
 
-        # Store county-level results uusing unique keys for race and candidates
-        race_key = (row['office_slug'], row['district'])
-        # Use party in case multiple candidates have same last name
-        cand_key = (row['party_clean'], row['last_name'])
+        # Store county-level results by office, then by candidate key
+        # Create unique candidate key from party and name, in case multiple candidates have same
+        cand_key = (row['party'], row['candidate'])
         # Below, setdefault initializes empty dict and list for the respective keys if they don't already exist.
-        race = results[race_key]
+        race = results[row['office']]
         race.setdefault(cand_key, []).append(row)
 
     return results
