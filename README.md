@@ -109,21 +109,20 @@ $ export PYTHONPATH=`pwd`:$PYTHONPATH
 
 ## Phase 4 - Model Your Domain
 
-In this section, we create classes that map to the real world of
+In this section, we create classes that model the real world of
 elections. These classes are intended to serve as a more intuitive container 
 for data transformations and complex bits of logic currently scattered across our application.
 
-The goal is to [hide complexity](http://en.wikipedia.org/wiki/Encapsulation_(object-oriented_programming) behind simple interfaces. 
+The goal is to [hide complexity](http://en.wikipedia.org/wiki/Encapsulation_(object-oriented_programming)) behind simple interfaces. 
 
-We perform these refactorings in a step-by-step fashion, and
-we'll attempt to [write tests *before* the actual code](http://en.wikipedia.org/wiki/Test-driven_development).
+We perform these refactorings in a step-by-step fashion and attempt to [write tests *before* the actual code](http://en.wikipedia.org/wiki/Test-driven_development). *NOTE*: _We've assigned git tags to various stages of the code so you can examine the state of affairs at different points. You can check out these tags in your local repo, or view them on github by clicking links in the README. Tag links look like this: [elex4.1.0](https://github.com/PythonJournos/refactoring101/tree/elex4.1.0)_
 
-So how do we start modeling our domain? We know we have races and candidates, who have
-collections of county results
+So how do we start modeling our domain? We clearly have races and candidates, and the results associated with each
+candidate.
 
-Let's start by creating these classes with some simple behavior.
-Gradually, we'll build these classes up to the point that they provide
-all the data and methods we need to produce our final summary final.
+Let's start by creating the Candidate and Race classes with some simple behavior.
+Gradually, we'll flesh out these classes to handle most of the grunt work needed 
+to produce the summary report.
 
 ### Candidate model
 
@@ -135,33 +134,38 @@ place for some of the computations that now live in _lib/parser.py_ and _lib/ana
 * winner status
 * margin of victory, if appropriate
 
-But before we dive into migrating computed values, let's start with the basics.
-
-We've decided to store our new election classes in a models.py (Django users, this should be familiar).
-Therefore, we'll store tests in a new _test_models.py_ module.
+Before we dive into migrating computed values, let's start with the basics. We've decided to store our new election classes in a models.py (Django users, this should be familiar). Therefore, we'll store tests in a new *test_models.py* module.
 
 We can run those tests by doing the following:
 ```bash
 nosetests -v tests/test_models.py
 ```
 
-*Add name handling*
+Now let's start writing some test-driven code.
+
+*Add name bits*
 
 * Create test_models.py
 * Add test for Candidate name handling
-* Run test to see it fail 
-* Write a Candidate class that exposes first and last name attributes
+* Run test to see it fail ([elex4.1.0](https://github.com/PythonJournos/refactoring101/tree/elex4.1.0))
+* Write a Candidate class that exposes first and last name attributes ([elex4.1.1](https://github.com/PythonJournos/refactoring101/tree/elex4.1.1))
 * Run test to see it pass
 
-_Post-refacotring code_
-
-*Add party attribute*
+*Add party*
 
 * Add test for Candidate.party
 * Run test to see it fail
 * Add party
 * Run test and see it pass
 
+*TODO*
+
+* Candidate.votes
+* Race.office and district
+* Race.add_result (gets or creates candidate instance)
+* Candidate.winner, margin, vote_pct (since these require all Candidates to be available via parent Race class)
+* Update Parser to return Candidate and Race classes
+* Update summary script to use Cand/Race objects returned by Parser class
 
 #### Exercises
 
