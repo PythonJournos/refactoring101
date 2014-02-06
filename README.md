@@ -10,6 +10,8 @@ Project code evolves through four phases, each contained in a numbered *elex* di
 
 The goal is to demonstrate how to use Python functions, modules, packages and classes to organize code more effectively. We also introduce unit testing as a strategy for writing programs that you can update with confidence. The overarching theme: **_As an application or program grows in size, writing readable code with tests can help tame complexity and keep you sane._**
 
+Wondering how to use this tutorial or why the hell we called it *refactoring101*? The [FAQ](https://github.com/PythonJournos/refactoring101/wiki/FAQ) has answers to these and sundry other questions. Also, check out the [Resources](https://github.com/PythonJournos/refactoring101/wiki/Resources) page for wisdom from our tribal elders.
+
 ## Phase 1 - Spaghetti
 
 We begin with a single, linear script in the _elex1/_ directory. Below are a few reasons why this [code smells](http://en.wikipedia.org/wiki/Code_smell) (some might even say it reeks):
@@ -27,9 +29,8 @@ We begin with a single, linear script in the _elex1/_ directory. Below are a few
 
 ####  Exercises
 
-* Try slicing up this code into a bunch of functions, where related bits of functionality are grouped together (hint: See
-*elex2/election_results.py* for one way of slicing up this file)
-* Write a unit test for one or more functions extracted from this module (hint: see test file in _elex2/_)
+* Try slicing up this code into a bunch of functions, where related bits of logic are grouped together.
+* Write a unit test for one or more functions extracted from this module.
 
 
 ## Phase 2 - Function Breakdown
@@ -89,7 +90,7 @@ $ export PYTHONPATH=`pwd`:$PYTHONPATH
 
 #### Questions
 
-* Do you _like_ the package and module names? How might you have named them differently?
+* Do you _like_ the package structure and module names? How would you organize or name things differently?
 * Why is it necessary to add the _refactoring101/_ directory to your PYTHONPATH?
 * What are three ways to update the PYTHONPATH?
 * What is a class? What is a method? 
@@ -101,6 +102,7 @@ $ export PYTHONPATH=`pwd`:$PYTHONPATH
   classes and methods to reflect "real-world" entities in the realm of elections.
 * Examine functions in _lib/_ and try assigning three functions to one of your new classes.
 * Try extracting logic from the _summarize_ function and re-implement it as a method on one of your classes.
+* Break the code. Find the code that determines the winner. Comment out the
 
 
 ## Phase 4 - Model Your Domain
