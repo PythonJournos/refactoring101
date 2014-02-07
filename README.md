@@ -78,7 +78,7 @@ elex3/
 * **_tests/_** contains tests for re-usable bits of code.
 
 Note that we did not change any of our functions. Mostly we just re-organized them into new modules, 
-with the goal of grouping related bits of logic in common-sense locations. We also migrated
+with the goal of grouping related bits of logic in common-sense locations. We also migrated 
 imports and "namespaced" imports of our own re-usable code under _elex3.lib_.
 
 **Important**: You must add the _refactoring101_ directory to your _PYTHONPATH_ before any of the tests or script will work. 
@@ -109,24 +109,32 @@ $ export PYTHONPATH=`pwd`:$PYTHONPATH
 
 ## Phase 4 - Model Your Domain
 
-In this section, we create classes that model the real world of
+In this section, we create classes that model the real world of 
 elections. These classes are intended to serve as a more intuitive container 
 for data transformations and complex bits of logic currently scattered across our application.
 
-The goal is to [hide complexity](http://en.wikipedia.org/wiki/Encapsulation_(object-oriented_programming)) behind simple interfaces. 
+The goal is to [hide complexity][] behind simple interfaces.
 
-We perform these refactorings in a step-by-step fashion and attempt to [write tests *before* the actual code](http://en.wikipedia.org/wiki/Test-driven_development). *NOTE*: _We've assigned git tags to various stages of the code so you can examine the state of affairs at different points. You can check out these tags in your local repo, or view them on github by clicking links in the README. Tag links look like this: [elex4.1.0](https://github.com/PythonJournos/refactoring101/tree/elex4.1.0)_
+We perform these refactorings in a step-by-step fashion and attempt to [write tests before the actual code][]. 
+*NOTE:We've assigned git tags to various stages of the code so you can examine the state of affairs at different points. 
+You can check out these tags in your local repo, or view them on github by clicking links in the README. 
+Tag links look like this: [elex4.1.0][]*
 
-So how do we start modeling our domain? We clearly have races and candidates, and the results associated with each
+[hide complexity]: http://en.wikipedia.org/wiki/Encapsulation_(object-oriented_programming)
+[write tests before the actual code]: http://en.wikipedia.org/wiki/Test-driven_development
+[elex4.1.0]: https://github.com/PythonJournos/refactoring101/tree/elex4.1.0
+
+So how do we start modeling our domain? We clearly have races and candidates, and the results associated with each 
 candidate.
 
-Let's start by creating the Candidate and Race classes with some simple behavior.
+Let's start by creating the Candidate and Race classes with some simple behavior 
 Gradually, we'll flesh out these classes to handle most of the grunt work needed 
 to produce the summary report.
 
+
 ### Candidate model
 
-Candidates have a name, party and county election results. The candidate model also seems like a natural
+Candidates have a name, party and county election results. The candidate model also seems like a natural 
 place for some of the computations that now live in _lib/parser.py_ and _lib/analysis.py_:
 
 * total candiate votes from all counties
@@ -134,7 +142,9 @@ place for some of the computations that now live in _lib/parser.py_ and _lib/ana
 * winner status
 * margin of victory, if appropriate
 
-Before we dive into migrating computed values, let's start with the basics. We've decided to store our new election classes in a models.py (Django users, this should be familiar). Therefore, we'll store tests in a new *test_models.py* module.
+Before we dive into migrating computed values, let's start with the basics. 
+We've decided to store our new election classes in a models.py (Django users, this should be familiar). 
+Therefore, we'll store tests in a new *test_models.py* module.
 
 We can run those tests by doing the following:
 ```bash
@@ -143,31 +153,72 @@ nosetests -v tests/test_models.py
 
 Now let's start writing some test-driven code.
 
-*Add name bits*
+#### Add name bits
 
 * Create test_models.py
-* Add test for Candidate name handling ([elex4.1.0](https://github.com/PythonJournos/refactoring101/blob/elex4.1.0/elex4/tests/test_models.py))
+* Add test for Candidate name handling ([elex4.1.0][])
 * Run test to see it fail 
-* Write a Candidate class that exposes first and last name attributes ([elex4.1.1](https://github.com/PythonJournos/refactoring101/blob/elex4.1.1/elex4/lib/models.py))
+* Write a Candidate class that exposes first and last name attributes ([elex4.1.1][])
 * Run test to see it pass
 
-*Add party*
+[elex4.1.0]: https://github.com/PythonJournos/refactoring101/blob/elex4.1.0/elex4/tests/test_models.py "test_models.py"
+[elex4.1.1]: https://github.com/PythonJournos/refactoring101/blob/elex4.1.1/elex4/lib/models.py        "lib/models.py"
 
-* Add test for Candidate.party
-* Run test to see it fail
-* Add party
+
+Let's apply a similar process for the party transformation.
+
+#### Add party
+
+* Migrate party tests from *test_parser.py* to TestCandidate. **Note**: We
+  had to update Candidate creation in *test_candidate_name* as well to prevent it from breaking!
+* Run test to see it fail ([elex4.2.0][])
+* Convert clean_party function to a method on Candidate. Make sure you add *self* as first parameter!
+  Apply the method during initialization. ([elex4.2.1][])
 * Run test and see it pass
 
-*TODO*
+[elex4.2.0]: https://github.com/PythonJournos/refactoring101/blob/elex4.2.0/elex4/tests/test_models.py "test_models.py"
+[elex4.2.1]: https://github.com/PythonJournos/refactoring101/blob/elex4.2.1/elex4/lib/models.py        "lib/models.py"
+
+##### Notes
+
+Notice we're not directly testing the *clean_party* method, but simply checking
+the *Candidate.party* attribute for correct values. *clean_party* has been nicely 
+tucked out of sight. In fact, we emphasize that this method is an *implementation detail* --
+part of the candidate class's internal housekeeping -- by prefixing it with two underscores. 
+
+This syntax denotes a [private method][] that is not intended for use by code outside the 
+*Candidate* class. We're restricting (though not completely preventing) the outside world from using it,
+since it's quite possible this code wil change or be removed entirely in the future. 
+
+> More frequently, you'll see a single underscore prefix used to denote private methods.
+> This is fine, though note that only the double underscores trigger the name-mangling
+> intended to limit usage of the method.
+
+[private method]: http://docs.python.org/2/tutorial/classes.html#private-variables-and-class-local-references
+
+So we now have two sets of code for the same functionality, and two sets of related
+tests. But we're not yet ready to delete the original *clean_party* function in _lib/parser.py_
+and its tests. Ideally, we'll delete that code *after* we have tests that exercise the output of the 
+summary logic. That way, we'll have greater confidence that converting from a function-based approach
+a class-based strategy hasn't corrupted the summary numbers.
+
+##### Questions
+
+* In order to migrate functions to methods on the Candidate class, we had to
+  make the first parameter in each method *self*. Why?
+
+##### Exercises
+
+
+## TODO
 
 * Candidate.votes
-* Race.office and district
+* Race.office and district 
 * Race.add_result (gets or creates candidate instance)
 * Candidate.winner, margin, vote_pct (since these require all Candidates to be available via parent Race class)
+* Write high-level tests for summarize output
 * Update Parser to return Candidate and Race classes
 * Update summary script to use Cand/Race objects returned by Parser class
 
-#### Exercises
 
-* Re-implement the Candidate method to use a property instead of the
-  clean_name method on initialization.
+
