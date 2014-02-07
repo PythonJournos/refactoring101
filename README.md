@@ -115,20 +115,22 @@ for data transformations and complex bits of logic currently scattered across ou
 
 The goal is to [hide complexity][] behind simple interfaces.
 
-We perform these refactorings in a step-by-step fashion and attempt to [write tests before the actual code][]. 
-*NOTE:We've assigned git tags to various stages of the code so you can examine the state of affairs at different points. 
-You can check out these tags in your local repo, or view them on github by clicking links in the README. 
-Tag links look like this: [elex4.1.0][]*
+We perform these refactorings in a step-by-step fashion and attempt to [write tests before the actual code][].
+
+> NOTE: We've assigned git tags code commits so you can examine the state of affairs at different points.
+> You can [check out these tags][] in your local repo, or view them on github by clicking links in the README. 
+> Tag links look like this: [elex4.1.0][]
 
 [hide complexity]: http://en.wikipedia.org/wiki/Encapsulation_(object-oriented_programming)
 [write tests before the actual code]: http://en.wikipedia.org/wiki/Test-driven_development
+[check out these tags]: http://githowto.com/tagging_versions
 [elex4.1.0]: https://github.com/PythonJournos/refactoring101/tree/elex4.1.0
 
 So how do we start modeling our domain? We clearly have races and candidates, and the results associated with each 
 candidate.
 
-Let's start by creating the Candidate and Race classes with some simple behavior 
-Gradually, we'll flesh out these classes to handle most of the grunt work needed 
+Let's start by creating Candidate and Race classes with some simple behavior.
+We''ll eventually flesh out these classes to handle most of the grunt work needed 
 to produce the summary report.
 
 
@@ -155,11 +157,10 @@ Now let's start writing some test-driven code.
 
 #### Add name bits
 
-* Create test_models.py
-* Add test for Candidate name handling ([elex4.1.0][])
-* Run test to see it fail 
-* Write a Candidate class that exposes first and last name attributes ([elex4.1.1][])
-* Run test to see it pass
+* Create *elex4/tests/test_models.py* and add test for Candidate name handling ([elex4.1.0][])
+* Run test; see it fail 
+* Write a Candidate class with *first_name* and *last_name* attributes ([elex4.1.1][])
+* Run test; see it pass
 
 [elex4.1.0]: https://github.com/PythonJournos/refactoring101/blob/elex4.1.0/elex4/tests/test_models.py "test_models.py"
 [elex4.1.1]: https://github.com/PythonJournos/refactoring101/blob/elex4.1.1/elex4/lib/models.py        "lib/models.py"
@@ -169,20 +170,30 @@ Let's apply a similar process for the party transformation.
 
 #### Add party
 
-* Migrate party tests from *test_parser.py* to TestCandidate. **Note**: We
-  had to update Candidate creation in *test_candidate_name* as well to prevent it from breaking!
-* Run test to see it fail ([elex4.2.0][])
-* Convert clean_party function to a method on Candidate. Make sure you add *self* as first parameter!
-  Apply the method during initialization. ([elex4.2.1][])
-* Run test and see it pass
+* Migrate party-related tests from *tests/test_parser.py* to *TestCandidate* in *tests/test_models.py*. 
+
+  > **Note**: Don't forget to add the party argument to the Candidate instance in *test_candidate_name*. 
+  > Otherwise you'll get an error!
+  
+* Run test; see it fail ([elex4.2.0][])
+* Convert the *clean_party* function to a method on *Candidate* and apply it during initialization. ([elex4.2.1][])
+  
+  ```python
+    def __clean_party(self, party):
+        # code that does stuff
+  ```
+  
+    > **Note**: Make sure you add *self* as the first parameter to the *__clean_party* method. Otherwise you'll get
+    > get a *TypeError* about not passing enough arguments. Bonus points if you know why.
+ 
+* Run test; see it pass
 
 [elex4.2.0]: https://github.com/PythonJournos/refactoring101/blob/elex4.2.0/elex4/tests/test_models.py "test_models.py"
 [elex4.2.1]: https://github.com/PythonJournos/refactoring101/blob/elex4.2.1/elex4/lib/models.py        "lib/models.py"
 
-##### Notes
+##### Observations
 
-Notice we're not directly testing the *clean_party* method, but simply checking
-the *Candidate.party* attribute for correct values. *clean_party* has been nicely 
+In the party refactoring above, notice that we're not directly testing the *clean_party* method but simply checking for the correct value of the *party* attribute on candidate instances. The *clean_party* code has been nicely 
 tucked out of sight. In fact, we emphasize that this method is an *implementation detail* --
 part of the candidate class's internal housekeeping -- by prefixing it with two underscores. 
 
@@ -196,11 +207,9 @@ since it's quite possible this code wil change or be removed entirely in the fut
 
 [private method]: http://docs.python.org/2/tutorial/classes.html#private-variables-and-class-local-references
 
-So we now have two sets of code for the same functionality, and two sets of related
-tests. But we're not yet ready to delete the original *clean_party* function in _lib/parser.py_
-and its tests. Ideally, we'll delete that code *after* we have tests that exercise the output of the 
-summary logic. That way, we'll have greater confidence that converting from a function-based approach
-a class-based strategy hasn't corrupted the summary numbers.
+We now have two sets of code (and related tests) for the same functionality. But we're not yet ready 
+to delete the original *clean_party* function in _lib/parser.py_. Ideally, we'll delete that code and its tests
+*after* we've written tests that exercise the summarization logic. That way, we'll have greater confidence that converting from a function-based to a class-based strategy hasn't corrupted the summary numbers.
 
 ##### Questions
 
