@@ -36,3 +36,9 @@ class TestCandidateVotes(TestCase):
         "Candidate.add_votes method should update vote count"
         self.cand.add_votes("Some County", 20)
         self.assertEquals(self.cand.votes, 20)
+
+    def test_county_results_access(self):
+        "Candidate.add_votes method should store county results"
+        self.cand.add_votes("Some County", 20)
+        expected = { "Some County": 20 }
+        self.assertEquals(self.cand.county_results, expected)
