@@ -6,6 +6,9 @@ class Candidate(object):
         self.party = self.__clean_party(party)
         self.votes = 0
 
+    def add_votes(self, county, votes):
+        self.votes += votes
+
     # Private methods
     def __clean_party(self, party):
         party = party.strip().upper()
