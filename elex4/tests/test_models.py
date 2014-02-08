@@ -21,3 +21,13 @@ class TestCandidate(TestCase):
     def test_clean_party_others(self):
         cand = Candidate("Smith, Joe", "Green")
         self.assertEquals(cand.party, 'GREEN')
+
+
+class TestCandidateVotes(TestCase):
+
+    def setUp(self):
+        self.cand = Candidate("Smith, Joe", "GOP")
+
+    def test_default_zero_votes(self):
+        "Candidate vote count should default to zero"
+        self.assertEquals(self.cand.votes, 0)
