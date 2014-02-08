@@ -33,6 +33,6 @@ class TestCandidateVotes(TestCase):
         self.assertEquals(self.cand.votes, 0)
 
     def test_vote_count_update(self):
-        "Candidate add_vote method should update vote count"
+        "Candidate.add_votes method should update vote count"
         self.cand.add_votes("Some County", 20)
         self.assertEquals(self.cand.votes, 20)
