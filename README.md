@@ -218,16 +218,76 @@ to delete the original *clean_party* function in _lib/parser.py_. Ideally, we'll
 
 ##### Exercises
 
+### Add vote
+
+Each candidate has a single name and party (well, usually), and numerous county-level results. 
+As part of our summary report, county-level results need to be rolled up into a racewide total for each candidate. 
+At a high level, it seems natural for each candidate to track his or her own vote totals.
+
+Below are a few other basic assumptions, or requirements, that will help us flesh out
+vote-handling code on the Candidate class:
+
+* A candidate should start with zero votes
+* Adding a vote should increment the vote count
+* County-level results should be accessible
+
+With this basic list of requirements in hand, we're ready to start coding. For each requirement, we'll start by
+writing a (failing) test that captures this assumnption; then we'll write code to make the test pass. The goal
+is to capture our assumptions in the form of tests, and then write code required to meet those assumnptions.
+
+1. Add test for zero vote count as initial Candidate state ([elex4.3.0][])
+
+  > Note: We created a new *TestCandidateVotes* class with a *setUp* method that lets us
+  > re-use the same candidate instance across all test methods. This
+  > makes our tests less brittle -- e.g., if we add a parameter to the
+  > Candidate class, we only have to update the candidate instance in
+  > one the *setUp* method, rather than in every test method (as 
+  > we will have to in the *TestCandidate* class)
+
+1. Run test; see it fail
+1. Update Candidate to have initial vote count of zero ([elex4.3.1][])
+1. Run test; see it pass
+1. Add test for *Candidate.add_votes* method ([elex4.3.2][]) 
+1. Run test; see it fail
+1. Create the *Candidate.add_votes* method ([elex4.3.3][])
+1. Run test; see it pass
+1. Create test for county_results attribute ([elex4.3.4][])
+1. Run test; see it fail
+1. Update *Candidate.add_votes* method to store county-level results ([elex4.3.5][])
+1. Run test; see it pass
+
+[elex4.3.0]: https://github.com/PythonJournos/refactoring101/blob/elex4.3.0/elex4/tests/test_models.py "test_models.py"
+[elex4.3.1]: https://github.com/PythonJournos/refactoring101/blob/elex4.3.1/elex4/lib/models.py        "lib/models.py"
+[elex4.3.2]: https://github.com/PythonJournos/refactoring101/blob/elex4.3.2/elex4/tests/test_models.py "test_models.py"
+[elex4.3.3]: https://github.com/PythonJournos/refactoring101/blob/elex4.3.3/elex4/lib/models.py        "lib/models.py"
+[elex4.3.4]: https://github.com/PythonJournos/refactoring101/blob/elex4.3.4/elex4/tests/test_models.py "test_models.py"
+[elex4.3.5]: https://github.com/PythonJournos/refactoring101/blob/elex4.3.5/elex4/lib/models.py        "lib/models.py"
+
+#### Questions
+
+* What does the TestCase *setUp* method do?
+* The test methods *test_vote_count_update* and *test_county_results_access* 
+  each add 20 votes to the candidate instance created in *setUp*. Why
+  are candidate votes equal to 20 in both tests, instead of
+  adding up to 40 in one of them (which would cause a test failure)?
+* In what order are test methods run?
+* What other unittest.TestCase methods are available?
+
+#### Exercises
+
+* Read the [unittest docs][] page.
+* The *Candidate.add_votes* method has a potential bug: It can't handle votes that are strings instead of proper integers.
+  This bug might crop up if our parser fails to convert strings to integers. Write a test to capture the bug, then update 
+  the method to handle such "dirty data" gracefully.
+
+[unittest docs]: http://docs.python.org/2/library/unittest.html
 
 ## TODO
 
-* Candidate.votes
 * Race.office and district 
 * Race.add_result (gets or creates candidate instance)
 * Candidate.winner, margin, vote_pct (since these require all Candidates to be available via parent Race class)
 * Write high-level tests for summarize output
 * Update Parser to return Candidate and Race classes
 * Update summary script to use Cand/Race objects returned by Parser class
-
-
 
