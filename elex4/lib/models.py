@@ -4,6 +4,7 @@ class Candidate(object):
     def __init__(self, raw_name, party):
         self.last_name, self.first_name = [name.strip() for name in raw_name.split(",")]
         self.party = self.__clean_party(party)
+        self.votes = 0
 
     # Private methods
     def __clean_party(self, party):
