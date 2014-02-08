@@ -162,7 +162,7 @@ place for some of the data transforms and computations that now live in _lib/par
 * margin of victory, if appropriate
 
 Before we dive into migrating data transforms and computed values, let's start with the basics. 
-We'll store our new election classes in a *lib/models.py* ([Django[] users, this should be familiar). 
+We'll store our new election classes in a *lib/models.py* ([Django][] users, this should be familiar). 
 We'll store tests in a new *test_models.py* module.
 
 [Django]: https://docs.djangoproject.com/en/dev/topics/db/models
@@ -182,7 +182,7 @@ Now let's start writing some test-driven code!
 #### Add name bits
 
 We'll start by creating a Candidate class that automatically parses a full name into first and last names (remember,
-candidate names in our source data are in the form *Lastname, Firstname*).
+candidate names in our source data are in the form *(Lastname, Firstname*).
 
 * Create *elex4/tests/test_models.py* and add test for Candidate name parts ([elex4.1.0][])
 * Run test; see it fail 
@@ -200,7 +200,7 @@ Let's apply a similar process for the party transformation.
 
 #### Add party
 
-The candidate party requires special handling for Democratics and Republicans. Otherwise we'll default to the raw party value.
+The candidate party requires special handling for Democrats and Republicans. Otherwise we'll default to the raw party value.
 
 * Migrate party-related tests from *tests/test_parser.py* to *TestCandidate* in *tests/test_models.py*. 
 
@@ -252,22 +252,22 @@ converting from a function-based to a class-based strategy hasn't corrupted the 
 
 ### Add vote
 
-Each candidate has a single name and party, and numerous county-level results. 
+In addition to a name and party, each *Candidate* has county-level results. 
 As part of our summary report, county-level results need to be rolled up into a racewide total for each candidate. 
 At a high level, it seems natural for each candidate to track his or her own vote totals.
 
-Below are a few other basic assumptions, or requirements, that will help us flesh out
-vote-handling on the Candidate class:
+Below are a few basic assumptions, or requirements, that will help us flesh out
+vote-handling on the *Candidate* class:
 
 * A candidate should start with zero votes
 * Adding a vote should increment the vote count
 * County-level results should be accessible
 
 With this basic list of requirements in hand, we're ready to start coding. For each requirement, we'll start by
-writing a (failing) test that captures this assumption; then we'll write code to make the test pass. The goal
-is to capture our assumptions in the form of tests, and then write code to meet those assumnptions.
+writing a (failing) test that captures this assumption; then we'll write code to make the test pass (i.e. meet
+our assumption).
 
-1. Add test for zero vote count as initial Candidate state ([elex4.3.0][])
+1. Add test to ensure *Candidate*'s initial vote count is zero ([elex4.3.0][])
 
   > Note: We created a new *TestCandidateVotes* class with a *setUp* method that lets us
   > re-use the same candidate instance across all test methods. This
@@ -277,12 +277,20 @@ is to capture our assumptions in the form of tests, and then write code to meet 
   > we will have to do in the *TestCandidate* class)
 
 1. Run test; see it fail
-1. Update Candidate to have initial vote count of zero ([elex4.3.1][])
+1. Update *Candidate* class to have initial vote count of zero ([elex4.3.1][])
 1. Run test; see it pass
+
+Now let's add a method to update the candidate's total vote totals for each county result.
+
 1. Add test for *Candidate.add_votes* method ([elex4.3.2][]) 
 1. Run test; see it fail
 1. Create the *Candidate.add_votes* method ([elex4.3.3][])
 1. Run test; see it pass
+
+Finally, let's stash the county-level results for each candidate.
+Although we're not using these lower-level numbers in our summary report, it's easy enough to
+add in case we need it for some other use case down the road.
+
 1. Create test for county_results attribute ([elex4.3.4][])
 1. Run test; see it fail
 1. Update *Candidate.add_votes* method to store county-level results ([elex4.3.5][])
