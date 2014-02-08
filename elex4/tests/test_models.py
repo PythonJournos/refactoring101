@@ -31,3 +31,8 @@ class TestCandidateVotes(TestCase):
     def test_default_zero_votes(self):
         "Candidate vote count should default to zero"
         self.assertEquals(self.cand.votes, 0)
+
+    def test_vote_count_update(self):
+        "Candidate add_vote method should update vote count"
+        self.cand.add_votes("Some County", 20)
+        self.assertEquals(self.cand.votes, 20)
