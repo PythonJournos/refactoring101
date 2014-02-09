@@ -108,7 +108,7 @@ $ export PYTHONPATH=`pwd`:$PYTHONPATH
 
 * Do you _like_ the package structure and module names? How would you organize or name things differently?
 * Why is it necessary to add the _refactoring101/_ directory to your PYTHONPATH?
-* What are three ways to update the PYTHONPATH?
+* What are three ways to add a library to the PYTHONPATH?
 * What is a class? What is a method? 
 * What is an object in Python? What is an instance?
 * What is the __init__ method on a class used for?
