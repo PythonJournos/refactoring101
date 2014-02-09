@@ -120,8 +120,6 @@ $ export PYTHONPATH=`pwd`:$PYTHONPATH
   classes and methods to reflect "real-world" entities in the realm of elections.
 * Examine functions in _lib/_ and try assigning three functions to one of your new classes.
 * Try extracting logic from the _summarize_ function and re-implement it as a method on one of your classes.
-* Break the code. Find the code that determines the winner. Comment out the
-
 
 ## Phase 4 - Model Your Domain
 
