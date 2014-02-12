@@ -55,4 +55,4 @@ class TestRace(TestCase):
     def test_clean_office_other(self):
         race = Race("2012-11-06", "President")
         self.assertEquals(race.office, "President")
-        self.assertEquals(race.district, None)
+        self.assertEquals(race.district, "")
