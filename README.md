@@ -108,7 +108,7 @@ $ export PYTHONPATH=`pwd`:$PYTHONPATH
 
 * Do you _like_ the package structure and module names? How would you organize or name things differently?
 * Why is it necessary to add the _refactoring101/_ directory to your PYTHONPATH?
-* What are three ways to update the PYTHONPATH?
+* What are three ways to add a library to the PYTHONPATH?
 * What is a class? What is a method? 
 * What is an object in Python? What is an instance?
 * What is the __init__ method on a class used for?
@@ -120,8 +120,6 @@ $ export PYTHONPATH=`pwd`:$PYTHONPATH
   classes and methods to reflect "real-world" entities in the realm of elections.
 * Examine functions in _lib/_ and try assigning three functions to one of your new classes.
 * Try extracting logic from the _summarize_ function and re-implement it as a method on one of your classes.
-* Break the code. Find the code that determines the winner. Comment out the
-
 
 ## Phase 4 - Model Your Domain
 
