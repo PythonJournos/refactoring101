@@ -1,4 +1,21 @@
 
+class Race(object):
+
+    def __init__(self, date, raw_office):
+        self.date = date
+        self.office, self.district = self.__clean_office(raw_office)
+
+    # Private methods
+    def __clean_office(self, office):
+        if 'Rep' in office:
+            office_clean = 'U.S. House of Representatives'
+            district = int(office.split('-')[-1])
+        else:
+            office_clean = office.strip()
+            district = ''
+        return office_clean, district
+
+
 class Candidate(object):
 
     def __init__(self, raw_name, party):
