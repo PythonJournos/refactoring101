@@ -42,7 +42,7 @@ def write_csv(summary):
         # Limit output to cleanly parsed, standardized values
         fieldnames = [
             'date',
-            'office_slug',
+            'office',
             'district',
             'last_name',
             'first_name',

@@ -65,29 +65,24 @@ for row in reader:
         party_clean = party
     row['party_clean'] = party_clean
 
-    # Standardize Office and add slug and district
+    # Standardize Office and district
     office = row['office']
-    if 'Pres' in office:
-        row['office_clean'] = office.strip()
-        row['office_slug'] = 'president'
-        row['district'] = ''
-    elif 'Rep' in office:
-        row['office_clean'] = 'U.S. Representative'
-        row['office_slug'] = 'us-house'
+    if 'Rep' in office:
+        row['office_clean'] = 'U.S. House of Representatives'
         row['district'] = int(office.split('-')[-1])
     else:
         row['office_clean'] = office.strip()
-        row['office_slug'] = office.strip().replace(' ', '-')
         row['district'] = ''
 
     # Convert total votes to an integer
     row['votes'] = int(row['votes'])
 
-    # Store county-level results by office, then by candidate key
+    # Store county-level results by office/district pair, then by candidate key
     # Create unique candidate key from party and name, in case multiple candidates have same
+    race_key = (row['office'], row['district'])
     cand_key = (row['party'], row['candidate'])
     # Below, setdefault initializes empty dict and list for the respective keys if they don't already exist.
-    race = results[row['office']]
+    race = results[race_key]
     race.setdefault(cand_key, []).append(row)
 
 
@@ -143,7 +138,6 @@ for race_key, cand_results in results.items():
         'tie_race': tie_race,
         'date': result['date'],
         'office': result['office_clean'],
-        'office_slug': result['office_slug'],
         'district': result['district'],
         'candidates': sorted_cands,
     }
@@ -155,7 +149,7 @@ with open(outfile, 'wb') as fh:
     # We'll limit the output to cleanly parsed, standardized values
     fieldnames = [
         'date',
-        'office_slug',
+        'office',
         'district',
         'last_name',
         'first_name',

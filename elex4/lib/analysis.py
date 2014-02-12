@@ -70,7 +70,6 @@ def summarize(results):
             'tie_race': tie_race,
             'date': result['date'],
             'office': result['office_clean'],
-            'office_slug': result['office_slug'],
             'district': result['district'],
             'candidates': sorted_cands,
         }

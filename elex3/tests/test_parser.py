@@ -5,14 +5,12 @@ from elex3.lib.parser import clean_office, clean_party
 
 class TestDataCleaners(TestCase):
 
-    def test_clean_office_prez(self):
-        self.assertEquals(clean_office('President'), ('President', 'president', ''))
 
     def test_clean_office_rep(self):
-        self.assertEquals(clean_office('U.S. Rep - 1'), ('U.S. House of Representatives', 'us-house', 1))
+        self.assertEquals(clean_office('U.S. Rep - 1'), ('U.S. House of Representatives', 1))
 
     def test_clean_office_other(self):
-        self.assertEquals(clean_office('U.S. Senate'), ('U.S. Senate', 'us-senate', ''))
+        self.assertEquals(clean_office('U.S. Senate'), ('U.S. Senate', ''))
 
     def test_clean_party_gop(self):
         self.assertEquals(clean_party('GOP'), 'REP')
