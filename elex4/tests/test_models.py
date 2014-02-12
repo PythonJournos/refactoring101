@@ -1,6 +1,7 @@
 from unittest import TestCase
 
-from elex4.lib.models import Candidate
+from elex4.lib.models import Candidate, Race
+
 
 class TestCandidate(TestCase):
 
@@ -42,3 +43,16 @@ class TestCandidateVotes(TestCase):
         self.cand.add_votes("Some County", 20)
         expected = { "Some County": 20 }
         self.assertEquals(self.cand.county_results, expected)
+
+
+class TestRace(TestCase):
+
+    def test_clean_office_rep(self):
+        race = Race("2012-11-06", "U.S. Rep - 1")
+        self.assertEquals(race.office, "U.S. House of Representatives")
+        self.assertEquals(race.district, 1)
+
+    def test_clean_office_other(self):
+        race = Race("2012-11-06", "President")
+        self.assertEquals(race.office, "President")
+        self.assertEquals(race.district, None)
