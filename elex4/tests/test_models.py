@@ -47,6 +47,16 @@ class TestCandidateVotes(TestCase):
 
 class TestRace(TestCase):
 
+    def setUp(self):
+        self.smith_result = {
+            'date': '2012-11-06',
+            'candidate': 'Smith, Joe',
+            'party': 'Dem',
+            'office': 'President',
+            'county': 'Fairfax',
+            'votes': 2000,
+        }
+
     def test_clean_office_rep(self):
         race = Race("2012-11-06", "U.S. Rep - 1")
         self.assertEquals(race.office, "U.S. House of Representatives")
@@ -56,3 +66,14 @@ class TestRace(TestCase):
         race = Race("2012-11-06", "President")
         self.assertEquals(race.office, "President")
         self.assertEquals(race.district, "")
+
+    def test_total_votes_default(self):
+        "Race total votes should default to zero"
+        race = Race("2012-11-06", "President")
+        self.assertEquals(race.total_votes, 0)
+
+    def test_total_votes_update(self):
+        "Race.add_result should update total votes for each result"
+        race = Race("2012-11-06", "President")
+        race.add_result(self.smith_result)
+        self.assertEquals(race.total_votes, 2000)
