@@ -77,3 +77,13 @@ class TestRace(TestCase):
         race = Race("2012-11-06", "President")
         race.add_result(self.smith_result)
         self.assertEquals(race.total_votes, 2000)
+
+    def test_add_result_to_candidate(self):
+        "Race.add_result update unique candidate instance"
+        race = Race("2012-11-06", "President")
+        # Add a vote twice. If it's the same candidate, vote total should be sum of results
+        race.add_result(self.smith_result)
+        race.add_result(self.smith_result)
+        cand_key = (self.smith_result['party'], self.smith_result['candidate'])
+        candidate = race.candidates[cand_key]
+        self.assertEquals(candidate.votes, 4000)

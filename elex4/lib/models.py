@@ -4,8 +4,24 @@ class Race(object):
     def __init__(self, date, raw_office):
         self.date = date
         self.office, self.district = self.__clean_office(raw_office)
+        self.total_votes = 0
+        self.candidates = {}
+
+    def add_result(self, result):
+        self.total_votes += result['votes']
+        candidate = self.__get_or_create_candidate(result)
+        candidate.add_votes(result['county'], result['votes'])
 
     # Private methods
+    def __get_or_create_candidate(self, result):
+        key = (result['party'], result['candidate'])
+        try:
+            candidate = self.candidates[key]
+        except KeyError:
+            candidate = Candidate(result['candidate'], result['party'])
+            self.candidates[key] = candidate
+        return candidate
+
     def __clean_office(self, office):
         if 'Rep' in office:
             office_clean = 'U.S. House of Representatives'
