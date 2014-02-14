@@ -23,6 +23,17 @@ these and sundry other questions. Also, check out the [Resources][] page for wis
 [FAQ]: https://github.com/PythonJournos/refactoring101/wiki/FAQ
 [Resources]: https://github.com/PythonJournos/refactoring101/wiki/Resources
 
+## Inspiration
+
+> "[Complexity kills][]." ~ *Ray Ozzie*
+
+> "The art of simplicity is a puzzle of complexity." ~ *Douglas Horton*
+
+> "...you're not refactoring; you're just [changing shit.][]" ~ *Hamlet D'Arcy*
+
+[Complexity kills]: http://ozzie.net/docs/dawn-of-a-new-day/
+[changing shit]: http://hamletdarcy.blogspot.com/2009/06/forgotten-refactorings.html
+
 ## Phase 1 - Spaghetti
 
 We begin with a single, linear script in the _elex1/_ directory. Below are a few reasons why this [code smells][] (some might even say it reeks):
@@ -49,18 +60,53 @@ We begin with a single, linear script in the _elex1/_ directory. Below are a few
 ## Phase 2 - Function Breakdown
 
 In the _elex2/_ directory, we've chopped up the original election_results.py code into a bunch of
-functions, and added a few tests. We've also turned this code directory
-into a package by adding an *\__init__.py* file.  This code is an improvement over _elex1/_, but it still
-could be a lot better.
+functions and turned this code directory into a package by adding an *\__init__.py* file.
+
+We've also added a suite of tests for the most parsing and summary code.
+
+This way we can methodically change the underlying code in later phases,
+while having greater confidence that we haven't corrupted our summary numbers. 
+
+We can't stress this step enough: Testing existing code, however complex, is *the* critical firs step in *refactoring*.
+If the code doesn't have tests, write some, at least for the most important bits of logic. Otherwise you're just [changing shit][] (see Ray Ozzie).
+
+Fortunately, our code has a suite of [unit tests][] for name parsing and, most importantly, the summary logic.
+
+
+[unit tests]: http://docs.python.org/2/library/unittest.html
+
+Python has built-in facilities for running tests, but they're a little raw for our taste. We'll use the [nose][] library
+to more easily run our tests:
+
+```bash
+nosetests -v tests/test_parser.py
+# or run all tests in the tests/ directory
+nosetests -v tests/*.py
+```
+
+[nose]: https://nose.readthedocs.org/en/latest/index.html
+
+#### Observations
+
+At a high level, this code is an improvement over _elex1/_, but it could still be much improved. We'll get to that
+in Phase 3, when we introduces [modules][] and [packages][].
+
+[modules]: http://docs.python.org/2/tutorial/modules.html
+[packages]: http://docs.python.org/2/tutorial/modules.html#packages
 
 #### Questions
 
 * What is a module?
 * What is a package?
 * What is *\__init__.py* and why do we use it?
+* What are [unit tests][]?
+* In what order are test methods run?
+* What does the TestCase *setUp* method do?
+* What other unittest.TestCase methods are available?
 
 #### Exercises
 
+* Install [nose][] and run the tests. Try breaking a few tests and run them to see the results.
 * List three ways this code is better than the previous version; and three ways it could be improved.
 * Organize functions in election_results.py into two or more new modules. (Hint: There is no right answer here. 
 [Naming things is hard][]; aim for directory and file names that are short but meaningful to a normal human).
@@ -69,23 +115,31 @@ could be a lot better.
 
 ## Phase 3 - Modularize
 
-In this third phase, we chop up our original election_results.py module into a legitimate 
-Python package. The new (hopefully self-explanatory) directory structure looks like below:
+In this third phase, we chop up our original *election_results.py* module into a legitimate 
+Python [package][]. The new directory structure is (hopefully) self-explanatory:
+
+TODO: RUN TESTS TO MAKE SURE PARSER AND SUMMARY STILL WORK
+
 
 ```
-elex3/
-├── __init__.py
-├── lib
+├── elex3
 │   ├── __init__.py
-│   ├── analysis.py
-│   ├── parser.py
-│   └── scraper.py
-├── scripts
-│   └── save_summary_to_csv.py
-└── tests
-    ├── __init__.py
-    ├── test_analysis.py
-    └── test_parser.py
+│   ├── fake_va_elec_results.csv
+│   ├── lib
+│   │   ├── __init__.py
+│   │   ├── parser.py
+│   │   ├── scraper.py
+│   │   └── summary.py
+│   ├── scripts
+│   │   └── save_summary_to_csv.py
+│   ├── summary_results.csv
+│   └── tests
+│       ├── __init__.py
+│       ├── sample_results.csv
+│       ├── sample_results_parsed.json
+│       ├── sample_results_parsed_tie_race.json
+│       ├── test_parser.py
+│       └── test_summary.py
 
 ```
 
@@ -97,11 +151,18 @@ Note that we did not change any of our functions. Mostly we just re-organized th
 with the goal of grouping related bits of logic in common-sense locations. We also migrated 
 imports and "namespaced" imports of our own re-usable code under _elex3.lib_.
 
+Here's where we start seeing the benefits of the tests we wrote on *elex2* code. We've totally
+re-organized our underlying code structure, and can run tests (with a few minor updates such 
+as imports) to ensure that we haven't broken anything.
+
+
 > **Note**: You must add the _refactoring101_ directory to your _PYTHONPATH_ before any of the tests or script will work. 
 
 ```bash
 $ cd /path/to/refactoring101
 $ export PYTHONPATH=`pwd`:$PYTHONPATH
+
+# TODO: add nose test command
 ```
 
 #### Questions
@@ -117,7 +178,7 @@ $ export PYTHONPATH=`pwd`:$PYTHONPATH
 #### Exercises
 
 * Look at the original results data, and model out some
-  classes and methods to reflect "real-world" entities in the realm of elections.
+  classes and methods to reflect "real world" entities in the realm of elections.
 * Examine functions in _lib/_ and try assigning three functions to one of your new classes.
 * Try extracting logic from the _summarize_ function and re-implement it as a method on one of your classes.
 
@@ -131,15 +192,9 @@ The goal is to [hide complexity][] behind simple [interfaces][].
 
 We perform these refactorings in a step-by-step fashion and attempt to [write tests before the actual code][].
 
-> NOTE: We've assigned git tags to code commits so you can examine the state of affairs at each step of coding.
-> You can [check out these tags][] in your local repo, or view them on github by clicking links in the README. 
-> Tag links look like this: [elex4.1.0][]
-
 [hide complexity]: http://en.wikipedia.org/wiki/Encapsulation_(object-oriented_programming)
 [interfaces]: http://en.wikipedia.org/wiki/Interface_(computing)
 [write tests before the actual code]: http://en.wikipedia.org/wiki/Test-driven_development
-[check out these tags]: http://githowto.com/tagging_versions
-[elex4.1.0]: https://github.com/PythonJournos/refactoring101/tree/elex4.1.0
 
 So how do we start modeling our domain? We clearly have races and candidates, which seem like natural...wait for it...
 "candidates" for model classes. We also have county-level results associated with each candidate.
@@ -152,80 +207,44 @@ to produce the summary report. But let's start with the basics.
 ### Candidate model
 
 Candidates have a name, party and county election results. The candidate model also seems like a natural 
-place for some of the data transforms and computations that now live in _lib/parser.py_ and _lib/analysis.py_:
+place for data transforms and computations that now live in _lib/parser.py_ and _lib/summary.py_:
 
+* candidate name parsing
 * total candiate votes from all counties
-* candidate vote percentage
 * winner status
-* margin of victory, if appropriate
 
-Before we dive into migrating data transforms and computed values, let's start with the basics. 
+Before we migrate the hard stuff, let's start with the basics. 
+
 We'll store our new election classes in a *lib/models.py* ([Django][] users, this should be familiar). 
-We'll store tests in a new *test_models.py* module.
+We'll store tests for our new classes in *test_models.py* module.
 
 [Django]: https://docs.djangoproject.com/en/dev/topics/db/models
 
-We'll run tests on the command line using the [nose][] library: 
-
-```bash
-nosetests -v tests/test_models.py
-# or run all tests in the tests/ directory
-nosetests -v tests/*.py
-```
-
-[nose]: https://nose.readthedocs.org/en/latest/index.html
-
 Now let's start writing some test-driven code!
 
-#### Add name bits
+#### Parse name
 
 We'll start by creating a Candidate class that automatically parses a full name into first and last names (remember,
 candidate names in our source data are in the form *(Lastname, Firstname*).
 
-* Create *elex4/tests/test_models.py* and add test for Candidate name parts ([elex4.1.0][])
+* Create *elex4/tests/test_models.py* and add test for Candidate name parts
 * Run test; see it fail 
-* Write a Candidate class with *first_name* and *last_name* attributes ([elex4.1.1][])
+* Write a Candidate class with a private method to parse the full name
 
   > *Note*: You can cheat here. Recall that the name parsing code was
   > already written in *lib/parser.py*.
 
 * Run test; see it pass
 
-[elex4.1.0]: https://github.com/PythonJournos/refactoring101/blob/elex4.1.0/elex4/tests/test_models.py "test_models.py"
-[elex4.1.1]: https://github.com/PythonJournos/refactoring101/blob/elex4.1.1/elex4/lib/models.py        "lib/models.py"
 
-Let's apply a similar process for the party transformation.
-
-#### Add party
-
-The candidate party requires special handling for Democrats and Republicans. Otherwise we'll default to the raw party value.
-
-* Migrate party-related tests from *tests/test_parser.py* to *TestCandidate* in *tests/test_models.py*. 
-
-  > **Note**: Don't forget to add the party argument to the Candidate instance in *test_candidate_name*. 
-  > Otherwise you'll get an error!
-  
-* Run test; see it fail ([elex4.2.0][])
-* Convert the *clean_party* function to a method on *Candidate* and apply it during initialization. ([elex4.2.1][])
-  
-  ```python
-    def __clean_party(self, party):
-        # code that does stuff
-  ```
-  
-    > **Note**: Make sure you add *self* as the first parameter to the *__clean_party* method. Otherwise you'll get
-    > get a *TypeError* about not passing enough arguments. Bonus points if you know why.
- 
-* Run test; see it pass
-
-[elex4.2.0]: https://github.com/PythonJournos/refactoring101/blob/elex4.2.0/elex4/tests/test_models.py "test_models.py"
-[elex4.2.1]: https://github.com/PythonJournos/refactoring101/blob/elex4.2.1/elex4/lib/models.py        "lib/models.py"
 
 ##### Observations
 
-In the party refactoring above, notice that we're not directly testing the *clean_party* method but simply 
-checking for the correct value of the *party* attribute on candidate instances. The *clean_party* code has been nicely 
-tucked out of sight. In fact, we emphasize that this method is an *implementation detail* --
+TODO: Change below to a private name_parse method
+
+In the refactoring above, notice that we're not directly testing the *name_parse* method but simply 
+checking for the correct value of the first and last names on candidate instances. The *name_parse* 
+code has been nicely tucked out of sight. In fact, we emphasize that this method is an *implementation detail* --
 part of the *Candidate* class's internal housekeeping -- by prefixing it with two underscores. 
 
 This syntax denotes a [private method][] that is not intended for use by code outside the 
@@ -238,10 +257,6 @@ since it's quite possible this code wil change or be removed in the future.
 
 [private method]: http://docs.python.org/2/tutorial/classes.html#private-variables-and-class-local-references
 
-We now have two sets of code (and related tests) for the same functionality. But we're not quite ready 
-to delete the original *clean_party* function in _lib/parser.py_. Ideally, we'll delete that code and its tests
-*after* we've written tests that exercise the summarization logic. That way, we'll have greater confidence that 
-converting from a function-based to a class-based strategy hasn't corrupted the summary numbers.
 
 ##### Questions
 
@@ -265,7 +280,7 @@ With this basic list of requirements in hand, we're ready to start coding. For e
 writing a (failing) test that captures this assumption; then we'll write code to make the test pass (i.e. meet
 our assumption).
 
-1. Add test to ensure *Candidate*'s initial vote count is zero ([elex4.3.0][])
+1. Add test to ensure *Candidate*'s initial vote count is zero 
 
   > Note: We created a new *TestCandidateVotes* class with a *setUp* method that lets us
   > re-use the same candidate instance across all test methods. This
@@ -275,41 +290,27 @@ our assumption).
   > we will have to do in the *TestCandidate* class)
 
 1. Run test; see it fail
-1. Update *Candidate* class to have initial vote count of zero ([elex4.3.1][])
+1. Update *Candidate* class to have initial vote count of zero
 1. Run test; see it pass
 
 Now let's add a method to update the candidate's total vote totals for each county result.
 
-1. Add test for *Candidate.add_votes* method ([elex4.3.2][]) 
+1. Add test for *Candidate.add_votes* method
 1. Run test; see it fail
-1. Create the *Candidate.add_votes* method ([elex4.3.3][])
+1. Create the *Candidate.add_votes* method
 1. Run test; see it pass
 
 Finally, let's stash the county-level results for each candidate.
 Although we're not using these lower-level numbers in our summary report, it's easy enough to
 add in case we need it for some other use case down the road.
 
-1. Create test for county_results attribute ([elex4.3.4][])
+1. Create test for county_results attribute 
 1. Run test; see it fail
-1. Update *Candidate.add_votes* method to store county-level results ([elex4.3.5][])
+1. Update *Candidate.add_votes* method to store county-level results
 1. Run test; see it pass
-
-[elex4.3.0]: https://github.com/PythonJournos/refactoring101/blob/elex4.3.0/elex4/tests/test_models.py "test_models.py"
-[elex4.3.1]: https://github.com/PythonJournos/refactoring101/blob/elex4.3.1/elex4/lib/models.py        "lib/models.py"
-[elex4.3.2]: https://github.com/PythonJournos/refactoring101/blob/elex4.3.2/elex4/tests/test_models.py "test_models.py"
-[elex4.3.3]: https://github.com/PythonJournos/refactoring101/blob/elex4.3.3/elex4/lib/models.py        "lib/models.py"
-[elex4.3.4]: https://github.com/PythonJournos/refactoring101/blob/elex4.3.4/elex4/tests/test_models.py "test_models.py"
-[elex4.3.5]: https://github.com/PythonJournos/refactoring101/blob/elex4.3.5/elex4/lib/models.py        "lib/models.py"
 
 #### Questions
 
-* What does the TestCase *setUp* method do?
-* The test methods *test_vote_count_update* and *test_county_results_access* 
-  each add 20 votes to the candidate instance created in *setUp*. Why
-  are candidate votes equal to 20 in both tests, instead of
-  adding up to 40 in one of them (which would cause a test failure)?
-* In what order are test methods run?
-* What other unittest.TestCase methods are available?
 
 #### Exercises
 
@@ -320,18 +321,14 @@ add in case we need it for some other use case down the road.
 
 [unittest docs]: http://docs.python.org/2/library/unittest.html
 
+
 ## Race model
 
 ## TODO
 
-* Race.office and district 
-* Race.add_result (gets or creates candidate instance)
-* Candidate.winner, margin, vote_pct (since these require all Candidates to be available via parent Race class)
-* Write high-level tests for summarize output
+* Add Race code and tests (and docs)
 * Update Parser to return Candidate and Race classes
 * Update summary script to use Cand/Race objects returned by Parser class
-* Add another tree view of directory; doesn't look so different from
+* Add tree view of *elex4* directory; doesn't look so different from
   _elex3_ tree view (mainly added models.py and test_models.py), but the underlying implementation has
   changed dramatically (hopefully for the better)
-* Add disclaimers about our pragmatic approach, vs more disciplined approaches
-  involving test isolation, etc.
