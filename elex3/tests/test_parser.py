@@ -1,23 +1,18 @@
+from os.path import dirname, join
 from unittest import TestCase
 
-from elex3.lib.parser import clean_office, clean_party
+from elex3.lib.parser import parse_and_clean
 
 
-class TestDataCleaners(TestCase):
+class TestParser(TestCase):
 
-
-    def test_clean_office_rep(self):
-        self.assertEquals(clean_office('U.S. Rep - 1'), ('U.S. House of Representatives', 1))
-
-    def test_clean_office_other(self):
-        self.assertEquals(clean_office('U.S. Senate'), ('U.S. Senate', ''))
-
-    def test_clean_party_gop(self):
-        self.assertEquals(clean_party('GOP'), 'REP')
-
-    def test_clean_party_dem(self):
-        self.assertEquals(clean_party('Democratic'), 'DEM')
-
-    def test_clean_party_others(self):
-        self.assertEquals(clean_party('Green'), 'GREEN')
-
+    def test_name_parsing(self):
+        "Parser should split full candidate name into first and last names"
+        path = join(dirname(__file__), 'sample_results.csv')
+        results = parse_and_clean(path)
+        race_key = 'President'
+        cand_key = 'GOP-Smith, Joe'
+        # Get one county result
+        smith = results[race_key][cand_key][0]
+        self.assertEqual(smith['first_name'], 'Joe')
+        self.assertEqual(smith['last_name'], 'Smith')

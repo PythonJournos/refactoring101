@@ -14,17 +14,17 @@ OUTPUT:
 
 
 """
-from os.path import abspath, dirname, join
+from os.path import dirname, join
 import csv
 
-from elex3.lib.analysis import summarize
+from elex3.lib.summary import summarize
 from elex3.lib.parser import parse_and_clean
 from elex3.lib.scraper import download_results
 
 
 def main():
     fname = 'fake_va_elec_results.csv'
-    path = join(dirname(dirname(abspath(__file__))), fname)
+    path = join(dirname(dirname(__file__)), fname)
     download_results(path)
     results = parse_and_clean(path)
     summary = summarize(results)
@@ -37,7 +37,7 @@ def write_csv(summary):
     CSV is written to 'summary_results.csv' file in elex3/ directory.
 
     """
-    outfile = join(dirname(dirname(abspath(__file__))), 'summary_results.csv')
+    outfile = join(dirname(dirname(__file__)), 'summary_results.csv')
     with open(outfile, 'wb') as fh:
         # Limit output to cleanly parsed, standardized values
         fieldnames = [
@@ -46,13 +46,10 @@ def write_csv(summary):
             'district',
             'last_name',
             'first_name',
-            'party_clean',
+            'party',
             'all_votes',
             'votes',
-            'vote_pct',
             'winner',
-            'margin_of_vic',
-            'tie_race',
         ]
         writer = csv.DictWriter(fh, fieldnames, extrasaction='ignore', quoting=csv.QUOTE_MINIMAL)
         writer.writeheader()
