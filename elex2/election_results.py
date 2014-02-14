@@ -157,6 +157,8 @@ def write_csv(summary):
                 writer.writerow(results)
 
 
-
+# Q: What on earth is this __name__ == __main__ thing?
+# A: Syntax that let's you execute a module as a script.
+# http://docs.python.org/2/tutorial/modules.html#executing-modules-as-scripts
 if __name__ == '__main__':
     main()
