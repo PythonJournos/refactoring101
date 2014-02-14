@@ -1,0 +1,5 @@
+date,office,district,county,candidate,party,votes
+2012-11-06,President,,Some County,"Smith, Joe",GOP,10
+2012-11-06,President,,Some County,"Doe, Jane",DEM,11
+2012-11-06,President,,Another County,"Smith, Joe",GOP,5
+2012-11-06,President,,Another County,"Doe, Jane",DEM,5

@@ -15,12 +15,12 @@ import csv
 import urllib
 from operator import itemgetter
 from collections import defaultdict
-from os.path import abspath, dirname, join
+from os.path import dirname, join
 
 
 def main():
     # Download CSV of fake Virginia election results to root of project
-    path = join(dirname(dirname(abspath(__file__))), 'fake_va_elec_results.csv')
+    path = join(dirname(dirname(__file__)), 'fake_va_elec_results.csv')
     download_results(path)
     # Process data
     results = parse_and_clean(path)
@@ -60,10 +60,13 @@ def parse_and_clean(path):
         # Convert total votes to an integer
         row['votes'] = int(row['votes'])
 
-        # Store county-level results by office/district pair, then by candidate party and raw name
-        race_key = (row['office'], row['district'])
+        # Store county-level results by slugified office and district (if there is one), 
+        # then by candidate party and raw name
+        race_key = row['office'] 
+        if row['district']:
+            race_key += "-%s" % row['district']
         # Create unique candidate key from party and name, in case multiple candidates have same
-        cand_key = (row['party'], row['candidate'])
+        cand_key = "-".join((row['party'], row['candidate']))
         # Below, setdefault initializes empty dict and list for the respective keys if they don't already exist.
         race = results[race_key]
         race.setdefault(cand_key, []).append(row)
@@ -131,7 +134,7 @@ def write_csv(summary):
     as this module.
 
     """
-    outfile = join(dirname(abspath(__file__)), 'summary_results.csv')
+    outfile = join(dirname((__file__)), 'summary_results.csv')
     with open(outfile, 'wb') as fh:
         # Limit output to cleanly parsed, standardized values
         fieldnames = [

@@ -18,12 +18,12 @@ import csv
 import urllib
 from operator import itemgetter
 from collections import defaultdict
-from os.path import abspath, dirname, join
+from os.path import dirname, join
 
 
 # Download CSV of fake Virginia election results to root of project
 url = "https://docs.google.com/spreadsheet/pub?key=0AhhC0IWaObRqdGFkUW1kUmp2ZlZjUjdTYV9lNFJ5RHc&output=csv"
-filename = join(dirname(dirname(abspath(__file__))), 'fake_va_elec_results.csv')
+filename = join(dirname(dirname(__file__)), 'fake_va_elec_results.csv')
 urllib.urlretrieve(url, filename)
 
 # Create reader for ingesting CSV as array of dicts
@@ -40,10 +40,13 @@ for row in reader:
     # Convert total votes to an integer
     row['votes'] = int(row['votes'])
 
-    # Store county-level results by office/district pair, then by candidate party and raw name
-    race_key = (row['office'], row['district'])
+    # Store county-level results by slugified office and district (if there is one), 
+    # then by candidate party and raw name
+    race_key = row['office']
+    if row['district']:
+            race_key += "-%s" % row['district']
     # Create unique candidate key from party and name, in case multiple candidates have same
-    cand_key = (row['party'], row['candidate'])
+    cand_key = "-".join((row['party'], row['candidate']))
     # Below, setdefault initializes empty dict and list for the respective keys if they don't already exist.
     race = results[race_key]
     race.setdefault(cand_key, []).append(row)
@@ -94,7 +97,7 @@ for race_key, cand_results in results.items():
 
 
 # Write CSV of results
-outfile = join(dirname(abspath(__file__)), 'summary_results.csv')
+outfile = join(dirname(__file__), 'summary_results.csv')
 with open(outfile, 'wb') as fh:
     # We'll limit the output to cleanly parsed, standardized values
     fieldnames = [
