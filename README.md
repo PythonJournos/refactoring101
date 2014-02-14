@@ -9,7 +9,7 @@ at [NICAR 2014][], but can also work as a stand-alone tutorial.
 The tutorial uses a small, [fake set of election results][] for demonstration purposes.
 
 Project code evolves through four phases, each contained in a numbered *elex* directory. Below are descriptions of each phase, 
-along with related questions and exercises that often anticipate the next phase or set of skills.
+along with related questions and exercises that anticipate the next phase or set of skills.
 
 The goal is to demonstrate how to use Python functions, modules, packages and classes to organize code more effectively. 
 We also introduce unit testing as a strategy for writing programs that you can update with confidence. The overarching theme:
@@ -29,14 +29,14 @@ these and sundry other questions. Also, check out the [Resources][] page for wis
 
 > "The art of simplicity is a puzzle of complexity." ~ *Douglas Horton*
 
-> "...you're not refactoring; you're just [changing shit.][]" ~ *Hamlet D'Arcy*
+> "...you're not refactoring; you're just [changing shit][]." ~ *Hamlet D'Arcy*
 
 [Complexity kills]: http://ozzie.net/docs/dawn-of-a-new-day/
 [changing shit]: http://hamletdarcy.blogspot.com/2009/06/forgotten-refactorings.html
 
 ## Phase 1 - Spaghetti
 
-We begin with a single, linear script in the _elex1/_ directory. Below are a few reasons why this [code smells][] (some might even say it reeks):
+We begin with a single, linear script in the _elex1/_ directory. Below are a few reasons why this [code smells][] (some might say it reeks):
 
 [code smells]: http://en.wikipedia.org/wiki/Code_smell
 
@@ -47,8 +47,14 @@ We begin with a single, linear script in the _elex1/_ directory. Below are a few
 
 #### Questions
 
-* What is a unit test? 
+* What are [unit tests][]? 
 * Can you identify three sections of logic that could be unit tested?
+* What are [modules][]?
+* What are [packages][]?
+
+[unit tests]: http://docs.python.org/2/library/unittest.html
+[modules]: http://docs.python.org/2/tutorial/modules.html
+[packages]: http://docs.python.org/2/tutorial/modules.html#packages
 
 
 ####  Exercises
@@ -62,18 +68,14 @@ We begin with a single, linear script in the _elex1/_ directory. Below are a few
 In the _elex2/_ directory, we've chopped up the original election_results.py code into a bunch of
 functions and turned this code directory into a package by adding an *\__init__.py* file.
 
-We've also added a suite of tests for the most parsing and summary code.
-
-This way we can methodically change the underlying code in later phases,
+We've also added a suite of tests. This way we can methodically change the underlying code in later phases,
 while having greater confidence that we haven't corrupted our summary numbers. 
 
-We can't stress this step enough: Testing existing code, however complex, is *the* critical firs step in *refactoring*.
+We can't stress this step enough: Testing existing code is *the* critical first step in refactoring.
 If the code doesn't have tests, write some, at least for the most important bits of logic. Otherwise you're just [changing shit][] (see Ray Ozzie).
 
 Fortunately, our code has a suite of [unit tests][] for name parsing and, most importantly, the summary logic.
 
-
-[unit tests]: http://docs.python.org/2/library/unittest.html
 
 Python has built-in facilities for running tests, but they're a little raw for our taste. We'll use the [nose][] library
 to more easily run our tests:
@@ -89,26 +91,20 @@ nosetests -v tests/*.py
 #### Observations
 
 At a high level, this code is an improvement over _elex1/_, but it could still be much improved. We'll get to that
-in Phase 3, when we introduces [modules][] and [packages][].
-
-[modules]: http://docs.python.org/2/tutorial/modules.html
-[packages]: http://docs.python.org/2/tutorial/modules.html#packages
+in Phase 3, when we introduce [modules][] and [packages][].
 
 #### Questions
 
-* What is a module?
-* What is a package?
 * What is *\__init__.py* and why do we use it?
-* What are [unit tests][]?
 * In what order are test methods run?
 * What does the TestCase *setUp* method do?
-* What other unittest.TestCase methods are available?
+* What other TestCase methods are available?
 
 #### Exercises
 
 * Install [nose][] and run the tests. Try breaking a few tests and run them to see the results.
 * List three ways this code is better than the previous version; and three ways it could be improved.
-* Organize functions in election_results.py into two or more new modules. (Hint: There is no right answer here. 
+* Organize functions in *election_results.py* into two or more new modules. (Hint: There is no right answer here. 
 [Naming things is hard][]; aim for directory and file names that are short but meaningful to a normal human).
 
 [Naming things is hard]: http://martinfowler.com/bliki/TwoHardThings.html
@@ -116,15 +112,12 @@ in Phase 3, when we introduces [modules][] and [packages][].
 ## Phase 3 - Modularize
 
 In this third phase, we chop up our original *election_results.py* module into a legitimate 
-Python [package][]. The new directory structure is (hopefully) self-explanatory:
-
-TODO: RUN TESTS TO MAKE SURE PARSER AND SUMMARY STILL WORK
+Python package. The new directory structure is (hopefully) self-explanatory:
 
 
 ```
 ├── elex3
 │   ├── __init__.py
-│   ├── fake_va_elec_results.csv
 │   ├── lib
 │   │   ├── __init__.py
 │   │   ├── parser.py
@@ -132,7 +125,6 @@ TODO: RUN TESTS TO MAKE SURE PARSER AND SUMMARY STILL WORK
 │   │   └── summary.py
 │   ├── scripts
 │   │   └── save_summary_to_csv.py
-│   ├── summary_results.csv
 │   └── tests
 │       ├── __init__.py
 │       ├── sample_results.csv
@@ -145,15 +137,14 @@ TODO: RUN TESTS TO MAKE SURE PARSER AND SUMMARY STILL WORK
 
 * **_lib/_** contains re-usable bits of code.
 * **_scripts/_** contains...well..scripts that leverage our re-usable code.
-* **_tests/_** contains tests for re-usable bits of code.
+* **_tests/_** contains tests for re-usable bits of code and related fixtures.
 
 Note that we did not change any of our functions. Mostly we just re-organized them into new modules, 
-with the goal of grouping related bits of logic in common-sense locations. We also migrated 
-imports and "namespaced" imports of our own re-usable code under _elex3.lib_.
+with the goal of grouping related bits of logic in common-sense locations. We also updated 
+imports and "namespaced" them of our own re-usable code under _elex3.lib_.
 
-Here's where we start seeing the benefits of the tests we wrote on *elex2* code. We've totally
-re-organized our underlying code structure, and can run tests (with a few minor updates such 
-as imports) to ensure that we haven't broken anything.
+Here's where we start seeing the benefits of the tests we wrote in the *elex2* phase. While we've heavily
+re-organized our underlying code structure, we can run the same tests (with a few minor updates to *import* statements) to ensure that we haven't broken anything.
 
 
 > **Note**: You must add the _refactoring101_ directory to your _PYTHONPATH_ before any of the tests or script will work. 
@@ -162,8 +153,13 @@ as imports) to ensure that we haven't broken anything.
 $ cd /path/to/refactoring101
 $ export PYTHONPATH=`pwd`:$PYTHONPATH
 
-# TODO: add nose test command
+$ nosetests -v elex3/tests/*.py
+$ python elex3/scripts/save_summary_to_csv.py
 ```
+
+Check out the results of the *save_summary_to_csv.py* command. The new *summary_results.csv* should be stored *inside* 
+the *elex3* directory, and should match the results file produced by *elex2/election_results.py*.
+
 
 #### Questions
 
@@ -314,12 +310,9 @@ add in case we need it for some other use case down the road.
 
 #### Exercises
 
-* Read the [unittest docs][] page.
 * The *Candidate.add_votes* method has a potential bug: It can't handle votes that are strings instead of proper integers.
-  This bug might crop up if our parser fails to convert strings to integers. Write a test to capture the bug, then update 
-  the method to handle such "dirty data" gracefully.
-
-[unittest docs]: http://docs.python.org/2/library/unittest.html
+  This bug might crop up if our parser fails to convert strings to integers. Write a unit test to capture the bug, then 
+  update the method to handle such "dirty data" gracefully.
 
 
 ## Race model
