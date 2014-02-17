@@ -44,7 +44,7 @@ class TestSummaryResults(TestCase):
         self.assertEqual(doe['winner'], 'X')
 
     def test_loser_has_no_winner_flag(self):
-        "Winner flag should be not be assigned to candidate with that does not have highest vote total"
+        "Winner flag should not be assigned to candidate that does not have highest vote total"
         smith = [cand for cand in self.race['candidates'] if cand['last_name'] == 'Smith'][0]
         self.assertEqual(smith['winner'], '')
 
