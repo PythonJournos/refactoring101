@@ -11,18 +11,6 @@ class TestCandidate(TestCase):
         self.assertEquals(cand.first_name, "Joe")
         self.assertEquals(cand.last_name, "Smith")
 
-    def test_party_gop(self):
-        cand = Candidate("Smith, Joe", "GOP")
-        self.assertEquals(cand.party, 'REP')
-
-    def test_clean_party_dem(self):
-        cand = Candidate("Smith, Joe", "Democratic")
-        self.assertEquals(cand.party, 'DEM')
-
-    def test_clean_party_others(self):
-        cand = Candidate("Smith, Joe", "Green")
-        self.assertEquals(cand.party, 'GREEN')
-
 
 class TestCandidateVotes(TestCase):
 
@@ -56,34 +44,56 @@ class TestRace(TestCase):
             'county': 'Fairfax',
             'votes': 2000,
         }
-
-    def test_clean_office_rep(self):
-        race = Race("2012-11-06", "U.S. Rep - 1")
-        self.assertEquals(race.office, "U.S. House of Representatives")
-        self.assertEquals(race.district, 1)
-
-    def test_clean_office_other(self):
-        race = Race("2012-11-06", "President")
-        self.assertEquals(race.office, "President")
-        self.assertEquals(race.district, "")
+        self.doe_result = {
+            'date': '2012-11-06',
+            'candidate': 'Doe, Jane',
+            'party': 'GOP',
+            'office': 'President',
+            'county': 'Fairfax',
+            'votes': 1000,
+        }
+        self.race = Race("2012-11-06", "President", "")
 
     def test_total_votes_default(self):
         "Race total votes should default to zero"
-        race = Race("2012-11-06", "President")
-        self.assertEquals(race.total_votes, 0)
+        self.assertEquals(self.race.total_votes, 0)
 
     def test_total_votes_update(self):
-        "Race.add_result should update total votes for each result"
-        race = Race("2012-11-06", "President")
-        race.add_result(self.smith_result)
-        self.assertEquals(race.total_votes, 2000)
+        "Race.add_result should update racewide vote count"
+        self.race.add_result(self.smith_result)
+        self.assertEquals(self.race.total_votes, 2000)
 
     def test_add_result_to_candidate(self):
-        "Race.add_result update unique candidate instance"
-        race = Race("2012-11-06", "President")
+        "Race.add_result should update a unique candidate instance"
         # Add a vote twice. If it's the same candidate, vote total should be sum of results
-        race.add_result(self.smith_result)
-        race.add_result(self.smith_result)
+        self.race.add_result(self.smith_result)
+        self.race.add_result(self.smith_result)
         cand_key = (self.smith_result['party'], self.smith_result['candidate'])
-        candidate = race.candidates[cand_key]
+        candidate = self.race.candidates[cand_key]
         self.assertEquals(candidate.votes, 4000)
+
+    def test_winner_has_flag(self):
+        "Winner flag should be assigned to candidates with most votes"
+        self.race.add_result(self.doe_result)
+        self.race.add_result(self.smith_result)
+        self.race.assign_winner()
+        smith = [cand for cand in self.race.candidates.values() if cand.last_name == 'Smith'][0]
+        self.assertEqual(smith.winner, 'X')
+
+    def test_loser_has_no_winner_flag(self):
+        "Winner flag should not be assigned to candidate who does not have highest vote total"
+        self.race.add_result(self.doe_result)
+        self.race.add_result(self.smith_result)
+        self.race.assign_winner()
+        doe = [cand for cand in self.race.candidates.values() if cand.last_name == 'Doe'][0]
+        self.assertEqual(doe.winner, '')
+
+    def test_tie_race(self):
+        "Winner flag should not be assigned to any candidate in a tie race"
+        # Modify Doe vote count to make it a tie
+        self.doe_result['votes'] = 2000
+        self.race.add_result(self.doe_result)
+        self.race.add_result(self.smith_result)
+        self.race.assign_winner()
+        for cand in self.race.candidates.values():
+            self.assertEqual(cand.winner, '')
