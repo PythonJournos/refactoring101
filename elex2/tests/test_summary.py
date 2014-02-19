@@ -59,7 +59,6 @@ class TestTieRace(TestCase):
 
     def test_tie_race_winner_flags(self):
         "Winner flag should not be assigned to any candidate in a tie race"
-        pass
         results = summarize(self.SAMPLE_RESULTS)
         race = results['President']
         for cand in race['candidates']:
