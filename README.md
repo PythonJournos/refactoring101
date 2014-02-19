@@ -298,7 +298,7 @@ Now let's add a method to update the candidate's total vote totals for each coun
 
 Finally, let's stash the county-level results for each candidate.
 Although we're not using these lower-level numbers in our summary report, it's easy enough to
-add in case we need it for some other use case down the road.
+add in case we need them for down the road.
 
 1. Create test for county_results attribute 
 1. Run test; see it fail
@@ -314,14 +314,624 @@ add in case we need it for some other use case down the road.
   This bug might crop up if our parser fails to convert strings to integers. Write a unit test to capture the bug, then 
   update the method to handle such "dirty data" gracefully.
 
-
 ## Race model
 
-## TODO
+Races have a date, office, and possibly a district if it's a congressional office. They also, of course,
+have candidates. In *elex3*, the *lib/parsery.py* code managed candiates, ensuring that county-level results
+were assigned to the appropriate candidate. 
 
-* Add Race code and tests (and docs)
-* Update Parser to return Candidate and Race classes
-* Update summary script to use Cand/Race objects returned by Parser class
+We'll now migrate that logic over to the Race class, along with a few
+other repsonsibilities:
+
+* Keep track of individual candidates and update their vote counts
+* Determine which, candidate, any, won the race
+* Track overall vote count in the race
+
+### Update racewide votes 
+
+The Race class has to keep a running tally of all votes. This represnts the sum of all votes received by
+individual candidates. 
+
+Let's build out our initial *Race* class with an *add_result* method
+that handles these updates. This should be pretty straightforward, and
+you'll notice that the tests mirror those used to perform the vote
+tallies on *Candidate* instances.
+
+```python
+
+# Don't forget to import Race from elex4.lib.models at the top of your test module!
+
+class TestRace(TestCase):
+
+    def setUp(self):
+        self.smith_result = {
+            'date': '2012-11-06',
+            'candidate': 'Smith, Joe',
+            'party': 'Dem',
+            'office': 'President',
+            'county': 'Fairfax',
+            'votes': 2000,
+        }
+        self.race = Race("2012-11-06", "President", "")
+
+    def test_total_votes_default(self):
+        "Race total votes should default to zero"
+        self.assertEquals(self.race.total_votes, 0)
+
+    def test_total_votes_update(self):
+        "Race.add_result should update racewide vote count"
+        self.race.add_result(self.smith_result)
+        self.assertEquals(self.race.total_votes, 2000)
+
+```
+
+Go ahead and run those tests and watch them fail. 
+
+Now let's build out our initial *Race* class with an *add_result* method
+to make the tests pass.
+
+
+```
+class Race(object):
+
+    def __init__(self, date, office, district):
+        self.date = date
+        self.office = office
+        self.district = district
+        self.total_votes = 0
+
+    def add_result(self, result):
+        self.total_votes += result['votes']
+
+```
+
+### Update candidates
+
+In earlier phases of the project, the parser code ensured that county-level results were grouped with 
+the appropriate, unique candidate in each race. If you recall, those county results were stored in a list
+for each candidate:
+
+```python
+# elex3.lib.parser.py
+
+def parse_and_clean
+
+  # ... snipped...
+
+      # Store county-level results by slugified office and district (if there is one), 
+        # then by candidate party and raw name
+        race_key = row['office'] 
+        if row['district']:
+            race_key += "-%s" % row['district']
+
+        # Create unique candidate key from party and name, in case multiple candidates have same
+        cand_key = "-".join((row['party'], row['candidate']))
+
+        # Get or create dictionary for the race
+        race = results[race_key]
+
+        # Get or create candidate dictionary with a default value of a list; Add result to the list
+        race.setdefault(cand_key, []).append(row)
+```
+
+We now have Candidate classes that manage their own county results.
+But we need to migrate the bookkeeping of Candidate instances from the
+parser code to the *Race* class.  Specifically, we need create a new Candidate instance or fetch a 
+pre-existing instance, as appropriate, for each county result.
+
+Let's start by adding a test to our *TestRace* class that ensures we're
+updating a single candiate instance, rather than accidentally creating
+duplicate instances.
+
+```python
+
+class TestRace(TestCase):
+
+    # ... snipped ...
+
+    def test_add_result_to_candidate(self):
+        "Race.add_result should update a unique candidate instance"
+        # Add a vote twice. If it's the same candidate, vote total should be sum of results
+        self.race.add_result(self.smith_result)
+        self.race.add_result(self.smith_result)
+        cand_key = (self.smith_result['party'], self.smith_result['candidate'])
+        candidate = self.race.candidates[cand_key]
+        self.assertEquals(candidate.votes, 4000)
+
+```
+
+Run that test and watch it fail. You'll notice we have a new *candidates* attribute that 
+is a dictionary. This is pretty much the same approach we used in
+earlier phases, where we stored candidate data by a unique key. However,
+instead of using a slug, we're now using tuples as keys. 
+
+> Accessing *candidate* data directly in this way is a code smell, and
+> it could be argued that we should also write a candidate lookup method. 
+> We'll leave that as an exercise.
+
+Now let's update the *Race* class and its *add_result* method to make the test pass.
+
+
+```python
+
+class Race(object):
+
+    def __init__(self, date, office, district):
+        # .... snipped .... 
+        # We add the candiddates dictionary
+        self.candidates = {}
+
+    def add_result(self, result):
+        self.total_votes += result['votes']
+        # Below lines
+        candidate = self.__get_or_create_candidate(result)
+        candidate.add_votes(result['county'], result['votes'])
+
+    # Private methods
+    def __get_or_create_candidate(self, result):
+        key = (result['party'], result['candidate'])
+        try:
+            candidate = self.candidates[key]
+        except KeyError:
+            candidate = Candidate(result['candidate'], result['party'])
+            self.candidates[key] = candidate
+        return candidate
+
+```
+
+Above, the bulk of our work is handled by a new private method
+called *__get_or_create_candidate*. This method attempts to fetch a
+pre-existing *Candidate* instance or creates a new one and adds it to the dictionary,
+before returning the instance.
+
+Once we have the correct instance, we call its *add_votes* method to
+update the vote count and add the result to that candidate's county results list.
+
+Our test verifies this by calling the *add_result* method twice and then
+checking the candidate instance's vote count to ensure the vote count is
+correct.
+
+> Testing purists may point out that we've violated the principle of [test
+> isolation][], since this unit test directly accesses the candidate
+> instance and relies on its underlying vote tallying logic.
+> There are testing strategies and tools, such as
+> mocks, to help avoid or minimize such *tight coupling* between unit tests.
+> For the sake of simplicity, we'll wave our hand at that issue in 
+> this tutorial and leave it as a study exercise for the reader.
+
+[test isolation]: http://c2.com/cgi/wiki?UnitTestIsolation
+
+
+### Assign winner
+
+We're now ready for the last major piece of the puzzle, namely, migrating
+the code that determines race winners. This logic was previously
+handled in the *summary* function and its related tests.
+
+```python
+# elex3/lib/summary.py
+
+# ... snipped ....
+
+    # sort cands from highest to lowest vote count
+    sorted_cands = sorted(cands, key=itemgetter('votes'), reverse=True)
+
+    # Determine winner, if any
+    first = sorted_cands[0]
+    second = sorted_cands[1]
+
+    if first['votes'] != second['votes']:
+        first['winner'] = 'X'
+
+# ... snipped ....
+
+```
+
+We'll migrate our tests and apply some minor updates to reflect the fact
+that we're now storing data in Candidate and Race classes, rather than
+nested dictionaries and lists.
+
+> It's important to note that while we're modifying the test syntax to accommodate 
+> our new objects, we're not changing the *substance* of the tests.
+
+
+First, let's add an extra sample result to the *setUp* method to support
+each test.
+
+
+```python
+
+# elex4/tests/test_models.py
+
+class TestRace(TestCase):
+
+    def setUp(self):
+    
+
+      # ... snipped ....
+
+        self.doe_result = {
+            'date': '2012-11-06',
+            'candidate': 'Doe, Jane',
+            'party': 'GOP',
+            'office': 'President',
+            'county': 'Fairfax',
+            'votes': 1000,
+        } 
+```
+
+Next, let's migrate the winner, non-winner and tie race tests from 
+*elex3/tests/test_summary* to the *TestRace* class in
+*elex4/tests/test_models.py*.
+
+
+```python
+
+class TestRace(TestCase):
+
+      # ... snipped ....
+
+    def test_winner_has_flag(self):
+        "Winner flag should be assigned to candidates with most votes"
+        self.race.add_result(self.doe_result)
+        self.race.add_result(self.smith_result)
+        # Our new method triggers the assignment of the winner flag
+        self.race.assign_winner()
+        smith = [cand for cand in self.race.candidates.values() if cand.last_name == 'Smith'][0]
+        self.assertEqual(smith.winner, 'X')
+
+    def test_loser_has_no_winner_flag(self):
+        "Winner flag should not be assigned to candidate that does not have highest vote total"
+        self.race.add_result(self.doe_result)
+        self.race.add_result(self.smith_result)
+        self.race.assign_winner()
+        doe = [cand for cand in self.race.candidates.values() if cand.last_name == 'Doe'][0]
+
+    def test_tie_race(self):
+        "Winner flag should not be assigned to any candidate in a tie race"
+        # Modify Doe vote count to make it a tie for this test method
+        self.doe_result['votes'] = 2000
+        self.race.add_result(self.doe_result)
+        self.race.add_result(self.smith_result)
+        self.race.assign_winner()
+        for cand in self.race.candidates.values():
+            self.assertEqual(cand.winner, '')
+
+```
+
+These tests mirror the test methods in *elex3/tests/test_summary.py*. We've simply tweaked them to reflect
+our class-based apprach and to exercise the new *Race* method that assigns the winner flag. 
+
+We'll eventually delete the duplicative tests in *test_summary.py*, but we're not quite ready to do so yet.
+
+First, let's make these tests pass by tweaking the *Candidate* class and implementing the *Race.assign_winner* method:
+
+```python
+# elex4/lib/models.py
+
+class Candidate(object):
+
+    def __init__(self, raw_name, party):
+
+        # ... snipped...
+
+        # Add a new winner attribute to candidate class with empty string as default value
+        self.winner = ''
+
+
+class Race(object):
+
+    # ... snipped...
+
+    def assign_winner(self):
+        # Sort cands from highest to lowest vote count
+        sorted_cands = sorted(self.candidates.values(), key=attrgetter('votes'), reverse=True)
+
+        # Determine winner, if any
+        first = sorted_cands[0]
+        second = sorted_cands[1]
+
+        if first.votes != second.votes:
+            first.winner = 'X'
+
+```
+
+Above, notice that we added a default *Candidate.winner* attribute, and
+a *Race.assign_winner* method. The latter is nearly a straight copy of
+our original winner-assignment logic in the *summarize* function. The key differences are:
+
+* We're calling *self.candidate.values()* to get a list of *Candidate* instances, since
+  these are now stored in a dictionary.
+* We're using *attrgetter* instead of *itemgetter* to access the candidate's vote count for
+  purposes of sorting. This is necessary, of course, because we're now sorting by the value of an
+  instance attribute rather than the value of a dictionary key.
+* We're accessing the *votes* attribute on candidate instances rather
+  than performing dictionary lookups.
+
+
+## Swapping Implementations
+
+With most of our core logic encapsulated in the *Candidate* and *Race* classes, we're finally ready to update the parser and summary code.
+This is the step we've been waiting for -- where we radically simplify these functions by outsourcing most of the work to our (hopefully)
+easier-to-understand domain models.
+
+Updates such as this on a large, active application often feels like changing the engine on a moving car. It's scary, and you're never quite
+sure if you're about to cause a wreck.  Fortunately, we have a suite of tests that let us apply our changes and
+quickly get feedback on whether we broke anything.
+
+Let's start at the "entry point" of our application, namely, the parser.
+We'll update this code to use our Race class instead of
+nested dictionaries and lists.
+
+
+### Parser update
+
+```python
+
+def parse_and_clean():
+    
+    # ... snipped ...
+
+    results = {}
+
+    # Initial data clean-up
+    for row in reader:
+        # Convert votes to integer
+        row['votes'] = int(row['votes'])
+
+        # Store races by slugified office and district (if there is one)
+        race_key = row['office'] 
+        if row['district']:
+            race_key += "-%s" % row['district']
+
+        try:
+            race = results[race_key]
+        except KeyError:
+            race = Race(row['date'], row['office'], row['district'])
+            results[race_key] = Race
+
+        race.add_result(row)
+
+    # ... snipped ...
+
+```
+
+Here are the list of changes:
+
+* Delete the candidate name parsing code 
+* Simplify results storage and use try/except to get/create Race instances
+* Update Race and, by extension, candidate vote totals, by calling
+  *add_result* on *Race* instance.
+
+Before porting the *summarize* function to use this new input, let's
+update the parser tests and ensure evertyhing runs correctly. 
+We'll tweak our test to use dotted-attribute notation instead of 
+dictionary lookups, to reflect the new class-based approach.
+
+```python
+# elex4/tests/test_parser.py
+
+class TestParser(TestCase):
+
+    def test_name_parsing(self):
+        "Parser should split full candidate name into first and last names"
+        race = results['President']
+        smith = [cand for cand in race.candidates.values() if cand.last_name == 'Smith'][0]
+        # Below lines changed from dictionary access
+        self.assertEqual(smith.first_name, 'Joe')   # formerly, smith['first_name']
+        self.assertEqual(smith.last_name, 'Smith')  # formerly, smith['last_name']
+
+```
+
+Now run the tests:
+
+```
+nosetests -v elex4/tests/test_parser.py
+```
+
+The updated *parse_and_clean* function is easier to read and maintain than its original version, but it
+could still be much improved. For instance, we could easily hide the race-key logic and type conversion of votes inside
+the *Race* class.
+
+We could also transform the function into a class, and encapsulate the get/create 
+logic for *Race* instances in a private method, similar to the *Race.__get_or_create_candidate*
+method. 
+
+We'll leave such refactorings as exercises for the reader.
+
+
+#### Exercises
+
+* The *parse_and_clean* function, though simplified, still has too much cruft. Perform the following refactorings:
+  * Move code that converts votes to an integer inside the *Race* class
+  * Create a *Race.key* [property][] that encapsulates this logic, and remove it from the parser function
+  * Simplify the return value of *parse_and_clean* to only return a list
+    of *Race* instances, rather than a dictionary. This will require
+    also refactoring the *summarize* function 
+* Refactor the *parse_and_clean* function into a *Parser* class with a
+  private *__get_or_create_race* method.
+
+[property]: http://docs.python.org/2/library/functions.html#property 
+
+
+### Summarize refactor
+
+Refactoring the *summarize* function is a bit trickier than the parser code,
+since we plan to change the input data for this function. Recall that the parser code
+now returns a dict of *Race* instances, rather than nested
+dicts. The *summarize* function needs to be updated to handle this type
+of input. 
+
+This also means that we can no longer feed the test fixture JSON, as is, to the *summarize*
+function in our *setUp* method.  Instead, we need to build input data that mirrors what
+would be returned by the updated *parse_and_clean* function: Namely, 
+a dictionary containing *Race* instances as values.
+
+First, we'll simplify the test fixtures by removing the nested
+object structure. Instead, we'll make them a simple array of result objects. 
+
+> Note:  We could re-use the same JSON fixtures from *elex3* without modification,
+> but this would result in a more convoluted *setUp* method. Wherever possible, use the
+> simplest test data possible.
+
+Then we'll update the *setUp* method to handle our simpflified JSON
+fixtures, and we'll move into a new *TestSummaryBase*
+class. *TestSummaryResults* and *TestTieRace* will *sub-class* this
+new base class instead of *TestCase*, allowing them both to make use of
+the same *setUp* code.
+
+This is an example of class [inheritance][]. Python classes can inherit
+methods and attributes from other classes by *subclassing* one or more
+parent classes. This is a powerful, core concept of object-oriented programming that
+helps keep code clean and re-usable. 
+
+[inheritance]: http://docs.python.org/2/tutorial/classes.html#inheritance
+
+And it's one that we've been using for a while, when we subclassed
+*unittest.TestCase* in our test classes. We're essentially
+substituting our own parent class, one that blends the rich functionality
+of *TestCase* with a custom *setUp* method. This allows the same
+*setUp* code to be used by methods in multiple subclasses.
+
+```python
+
+class TestSummaryBase(TestCase):
+
+    def setUp(self):
+        # Recall that sample data only has a single Presidential race
+        race = Race('2012-11-06', 'President', '')
+        for result in self.SAMPLE_RESULTS:
+            race.add_result(result)
+        # summarize function expects a dict, keyed by race
+        summary = summarize({'President': race})
+        self.race = summary['President']
+
+
+# Update the main test classes to inherit this base class, instead of
+# directly from TestCase
+
+class TestSummaryResults(TestSummaryBase):
+
+# ... snipped ...
+
+
+class TestTieRace(TestSummaryBase):
+
+# ... snipped ...
+
+```
+
+If you ran the *test_summary.py* suite now, you'd see all tests failing.
+
+Now we're ready to swap in our new class-based implementation. This time
+we'll be deleting quite a bit of code, and tweaking what remains. Below
+is the new code, followed by a list of major changes:
+
+```python
+
+    # We removed the defaultdict and use a plain-old dict
+    summary = {}
+
+    for race_key, race in results.items():
+        cands = []
+        # Call our new assign_winner method
+        race.assign_winner()
+        # Loop through Candidate instances and extract a dictionary 
+        # of target values. Basically, we're throwing away county-level
+        # results since we don't need those for the summary report
+        for cand in race.candidates.values():
+            # Remove lower-level county results
+            # This is a dirty little trick to botainfor easily obtaining
+            # a dictionary of candidate attributes.
+            info = cand.__dict__.copy()
+            # Remove county results
+            info.pop('county_results')
+            cands.append(info)
+
+        summary[race_key] = {
+            'all_votes': race.total_votes,
+            'date': race.date,
+            'office': race.office,
+            'district': race.district,
+            'candidates': cands,
+        }
+
+    return summary
+
+```
+
+
+Changes to the *summariz* function include:
+
+* Convert *summary* output to plain dictionary (instead of defaultdict)
+* Delete all code for sorting and determining winner. This is replaced
+  by a call to the *assign_winner* method on Race classes.
+* Create a list of candidate data as dictionaries without county-level results
+* Update code that adds data to the *summary* dictionary to use the race
+  instance and newly created *cands* list.
+
+Of course, we should run our test to make sure the implementation works.
+
+```
+nosetests -v elex4/tests/test_summary.py
+```
+
+At this point, our refactoring work is complete. We should verify that
+all tests run without failures:
+
+```
+nosetests -v elex4/tests/test_*.py
+```
+
+Overall, the *summarize* function has grown much simpler by outsourcing the
+bulk of work to the *Race* and *Candidate* classes. In fact, it could be
+argued that the *summarize* function doesn't do enough at this point to 
+justify its existence. Its main role is massaging data into a form
+that plays nice with the *save_summary_to_csv.py* script.
+
+It might make sense to push the remaining bits of logic into the Race/Candidate model classes
+and the *save_summary_to_csv.py* script.
+
+You'll also notice that the *summary* tests closely mirror those 
+for the *Race* class in *elex4/tests/test_models.py*. 
+Redundant tests can cause confusion and add maintenance overhead.
+
+It would make sense at this point to delete the *summarize* tests for underlying 
+functionality -- tallying votes, assigning winners -- and create new tests specific to 
+the summary output. For example, you could write a test that ensures the output structure meets
+expections.
+
+#### Questions
+
+* What is a class attribute? 
+* How does Python construct classes? 
+* What is the [\__dict__][] special attribute on a class?
+* How can the built-in [type][] function be used to construct classes dynamically?
+
+[\__dict__]: http://docs.python.org/2/library/stdtypes.html#object.__dict__
+[type]: http://docs.python.org/2/library/functions.html#type
+
+#### Exercises
+
+* Implement a *Race.summary* [property][] that returns all data
+  for the instance, minus the *Candidate* county results. Swap this implementation 
+  into the *summarize* function.
+* Delete tests in *elex4/tests/test_summary.py* and add a new test that
+  verifies the structure of the output. 
+
+
+## TODO
 * Add tree view of *elex4* directory; doesn't look so different from
   _elex3_ tree view (mainly added models.py and test_models.py), but the underlying implementation has
   changed dramatically (hopefully for the better)
+* What's Next?
+  * Refactoring book spells out more precise steps for refactoring.
+  * So you have a solid test suite, and want to change some code. How do you ensure all references to that code have
+    been updated?
+
+* What didn't we cover?
+  * *super* (for calling methods on parent classes)
+  * Multiple inheritance and method resolution order (see the Diamond problem)
+  * Decorators
+  * Descriptors
+  * Meta-programming and \__new__ constructor
