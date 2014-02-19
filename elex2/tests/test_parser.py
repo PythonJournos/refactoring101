@@ -4,7 +4,6 @@ from unittest import TestCase
 from elex2.election_results import parse_and_clean
 
 
-class TestDataCleaners(TestCase):
 
 class TestParser(TestCase):
 
