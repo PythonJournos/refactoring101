@@ -1,4 +1,5 @@
 # refactoring101
+![Draw the rest of the owl](http://i2.kym-cdn.com/photos/images/original/000/572/090/77f.jpg)
 
 ## Overview
 
