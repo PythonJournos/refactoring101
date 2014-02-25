@@ -2,3 +2,4 @@
 *.csv
 *.vim
 *_bkup*
+_docs/*
