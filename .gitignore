@@ -2,4 +2,6 @@
 *.csv
 *.vim
 *_bkup*
-_docs/*
+html/*
+_docs/_build/*
+_docs/index.rst
