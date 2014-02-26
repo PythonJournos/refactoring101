@@ -1,2 +1,7 @@
 *.pyc
 *.csv
+*.vim
+*_bkup*
+html/*
+_docs/_build/*
+_docs/index.rst

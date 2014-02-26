@@ -1,0 +1,46 @@
+[
+            {
+                "candidate": "Doe, Jane", 
+                "county": "Some County", 
+                "date": "2012-11-06", 
+                "district": "", 
+                "first_name": "Jane", 
+                "last_name": "Doe", 
+                "office": "President", 
+                "party": "DEM", 
+                "votes": 11
+            }, 
+            {
+                "candidate": "Doe, Jane", 
+                "county": "Another County", 
+                "date": "2012-11-06", 
+                "district": "", 
+                "first_name": "Jane", 
+                "last_name": "Doe", 
+                "office": "President", 
+                "party": "DEM", 
+                "votes": 5
+            },
+            {
+                "candidate": "Smith, Joe", 
+                "county": "Some County", 
+                "date": "2012-11-06", 
+                "district": "", 
+                "first_name": "Joe", 
+                "last_name": "Smith", 
+                "office": "President", 
+                "party": "GOP", 
+                "votes": 10
+            }, 
+            {
+                "candidate": "Smith, Joe", 
+                "county": "Another County", 
+                "date": "2012-11-06", 
+                "district": "", 
+                "first_name": "Joe", 
+                "last_name": "Smith", 
+                "office": "President", 
+                "party": "GOP", 
+                "votes": 5
+            }
+]
