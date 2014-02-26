@@ -43,9 +43,5 @@ def bootstrap_docs():
     """
     Setup docs.
     """
-    if readme_to_rst():
-        build_sphinx_html()
-        serve_sphinx()
-
-    else:
-        print "Exiting so you can install pandoc."
+    build_sphinx_html()
+    serve_sphinx()
