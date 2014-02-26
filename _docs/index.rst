@@ -43,12 +43,8 @@ program grows in size, writing readable code with tests can help tame
 complexity and keep you sane.***
 
 Wondering how to use this tutorial or why the hell we called it
-*refactoring101*? The
-`FAQ <https://github.com/PythonJournos/refactoring101/wiki/FAQ>`__ has
-answers to these and sundry other questions. Also, check out the
-`Resources <https://github.com/PythonJournos/refactoring101/wiki/Resources>`__
-page for wisdom from our tribal elders.
-
+*refactoring101*? The :ref:`FAQ` has answers to these and sundry other questions. 
+Also, check out the :ref:`Resources` page for wisdom from our tribal elders.
 
 Table of Contents
 -----
@@ -60,3 +56,6 @@ Table of Contents
    phase3
    phase4
    whats_next
+   faq
+   resources
+
