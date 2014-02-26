@@ -50,28 +50,8 @@ answers to these and sundry other questions. Also, check out the
 page for wisdom from our tribal elders.
 
 
-TODO
-----
-
--  Convert wiki pages to rst
--  Add tree view of *elex4* directory; doesn't look so different from
-   *elex3* tree view (mainly added models.py and test\_models.py), but
-   the underlying implementation has changed dramatically (hopefully for
-   the better)
--  What's Next?
--  Refactoring book spells out more precise steps for refactoring.
--  So you have a solid test suite, and want to change some code. How do
-   you ensure all references to that code have been updated?
-
--  What didn't we cover?
--  *super* (for calling methods on parent classes)
--  Multiple inheritance and method resolution order (see the Diamond
-   problem)
--  Decorators
--  Descriptors
--  Meta-programming and \_\_new\_\_ constructor
-
-
+Table of Contents
+-----
 .. toctree::
    :maxdepth: 2
 
@@ -79,3 +59,4 @@ TODO
    phase2
    phase3
    phase4
+   whats_next
