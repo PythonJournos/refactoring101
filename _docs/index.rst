@@ -4,8 +4,6 @@ refactoring101
 .. figure:: http://i2.kym-cdn.com/photos/images/original/000/572/090/77f.jpg
    :alt: Draw the rest of the owl
 
-   Draw the rest of the owl
-
 Inspiration
 -----------
 
