@@ -2,24 +2,25 @@ import os
 
 from fabric.api import *
 
-def readme_to_rst():
-    """
-    Convert README.md to _docs/index.rst for Sphinx.
-    Convert the GitHub-friendly README.md to a Sphinx-friendly reStructured text file.
-    """
 
-    print "Converting markdown to reStructured text."
-
-    # Try to run the pandoc command to convert our file.
-    test_pandoc = os.system('pandoc -s README.md -o _docs/index.rst')
-
-    # If this fails to run for any reason, assume it's not installed and send a nice message.
-    if test_pandoc != 0:
-        print "You don't have pandoc installed! Go get it!\nhttp://johnmacfarlane.net/pandoc/installing.html"
-
-        return False
-
-    return True
+#def readme_to_rst():
+#    """
+#    Convert README.md to _docs/index.rst for Sphinx.
+#    Convert the GitHub-friendly README.md to a Sphinx-friendly reStructured text file.
+#    """
+#
+#    print "Converting markdown to reStructured text."
+#
+#    # Try to run the pandoc command to convert our file.
+#    test_pandoc = os.system('pandoc -s README.md -o _docs/index.rst')
+#
+#    # If this fails to run for any reason, assume it's not installed and send a nice message.
+#    if test_pandoc != 0:
+#        print "You don't have pandoc installed! Go get it!\nhttp://johnmacfarlane.net/pandoc/installing.html"
+#
+#        return False
+#
+#    return True
 
 
 def build_sphinx_html():
@@ -42,9 +43,5 @@ def bootstrap_docs():
     """
     Setup docs.
     """
-    if readme_to_rst():
-        build_sphinx_html()
-        serve_sphinx()
-
-    else:
-        print "Exiting so you can install pandoc."
+    build_sphinx_html()
+    serve_sphinx()
