@@ -1,5 +1,5 @@
-Phase 1 - Spaghetti
--------------------
+Spaghetti
+=========
 
 We begin with a single, linear script in the *elex1/* directory. Below
 are a few reasons why this `code
@@ -14,7 +14,7 @@ reeks):
 -  None of the code is reusable by other programs.
 
 Questions
-^^^^^^^^^
+---------
 
 -  What are `unit
    tests <http://docs.python.org/2/library/unittest.html>`__?
@@ -25,7 +25,7 @@ Questions
    `packages <http://docs.python.org/2/tutorial/modules.html#packages>`__?
 
 Exercises
-^^^^^^^^^
+---------
 
 -  Slice up this code into a bunch of functions, where related bits of
    logic are grouped together.

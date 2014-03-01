@@ -17,57 +17,66 @@ Inspiration
     shit <http://hamletdarcy.blogspot.com/2009/06/forgotten-refactorings.html>`__."
     ~ *Hamlet D'Arcy*
 
+
 Overview
 --------
 
-So you have a few scripts under your belt that get the job done. But the initial 
-euphoria of making the machine do your bidding is wearing off...
+So you've written a few scripts that get the job done. The machine 
+does your bidding, but the initial euphoria has worn off.
 
-Bugs are cropping up. Data mistakes are creeping in. You're copying code between projects, 
-or worse, inside the same project. Your programs aren't `failing gracefully <http://en.wikipedia.org/wiki/Graceful_exit>`__.
+Bugs are cropping up. Data quirks are creeping in. Duplicate code is spreading like a 
+virus across projects, or worse, inside the same project. Programs aren't `failing gracefully <http://en.wikipedia.org/wiki/Graceful_exit>`__.
 
-You realize there's a better way. You see how all these really smart people write elegant
-code to handle the same problems, but you're bewildered at how to do the same.
+There *must* be a better way, but not sure what path to follow.
 
 If you're like us and have had that itchy feeling, this tutorial is for you.
 
-After you've mastered the basics of writing code, you need to understand how to *design* programs. 
+After you've mastered the basics of writing code, you need to understand how to *design* programs.
 The goal of this tutorial is to bridge that gap. We'll demonstrate how to use Python language
-features -- functions, modules,
-packages and classes -- to organize code more effectively. We also
-introduce unit testing as a strategy for writing programs that you can
-update with confidence. The overarching theme: **As a program grows in size, writing readable code with tests can help tame
+features -- functions, modules, packages and classes -- to organize code more effectively. We also
+introduce unit testing as a strategy for writing programs that you can update with confidence.
+
+The overarching theme: **As a program grows in size, writing readable code with tests can help tame
 complexity and keep you sane.**
 
+
+How To Use This Tutorial
+------------------------
+
 The `Github repo <https://github.com/PythonJournos/refactoring101>`__ contains code samples demonstrating how to transform a
-complex, linear script into a modular, easier-to-maintain package. The
-code was written as a reference for the *Python: Beyond the Basics* class
-at `NICAR 2014 <http://ire.org/conferences/nicar-2014/>`__, but can also
+complex, linear script into a modular, easier-to-maintain package. The code was written as a reference for the 
+*Python: Beyond the Basics* class at `NICAR 2014 <http://ire.org/conferences/nicar-2014/>`__, but can also
 work as a stand-alone tutorial.
 
-The tutorial uses a small, `fake set of election
+We use a small, `fake set of election
 results <https://docs.google.com/spreadsheet/pub?key=0AhhC0IWaObRqdGFkUW1kUmp2ZlZjUjdTYV9lNFJ5RHc&output=html>`__
-for demonstration purposes.
+for demonstration purposes. Project code evolves through four phases, each contained in a numbered
+*elex* directory in the `code repo <https://github.com/PythonJournos/refactoring101>`__.
 
-Project code evolves through four phases, each contained in a numbered
-*elex* directory. Below are descriptions of each phase, along with
-related questions and exercises that anticipate the next phase or set of
-skills.
+**Each section ends with questions and/or exercises. These are the most important part of the tutorial.**
+You're supposed to wrestle with these questions and exercises. Tinker with the code; break the code; write alternative versions of the code.
+Then email me (it's not Jeremy's fault) and explain why the code sucks.
+Then read your own code from six months ago ;)
 
-Wondering how to use this tutorial or why the hell we called it
-*refactoring101*? The :ref:`FAQ` has answers to these and sundry other questions. 
-Also, check out the :ref:`Resources` page for wisdom from our tribal elders.
+
+Questions and Resources
+-----------------------
+
+Still have questions? Check out the :ref:`FAQ`, as well the :ref:`Resources` page for wisdom from tribal elders.
+
 
 Table of Contents
 -----
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    phase1
    phase2
    phase3
-   phase4
+   phase4/overview
+   phase4/candidates
+   phase4/races
+   phase4/swapout
    whats_next
    faq
    resources
-

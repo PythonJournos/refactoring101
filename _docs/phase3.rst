@@ -1,5 +1,5 @@
-Phase 3 - Modularize
---------------------
+Modules, packages, oh my!!
+==========================
 
 In this third phase, we chop up our original *election\_results.py*
 module into a legitimate Python package. The new directory structure is
@@ -57,7 +57,7 @@ directory, and should match the results file produced by
 *elex2/election\_results.py*.
 
 Questions
-^^^^^^^^^
+---------
 
 -  Do you *like* the package structure and module names? How would you
    organize or name things differently?
@@ -70,7 +70,7 @@ Questions
 -  What is *self* and how does it relate to class instances?
 
 Exercises
-^^^^^^^^^
+---------
 
 -  Look at the original results data, and model out some classes and
    methods to reflect "real world" entities in the realm of elections.

@@ -1,5 +1,5 @@
-Phase 2 - Function Breakdown
-----------------------------
+Function breakdown
+==================
 
 In the *elex2/* directory, we've chopped up the original
 election\_results.py code into a bunch of functions and turned this code
@@ -32,7 +32,7 @@ more easily run our tests:
     nosetests -v tests/*.py
 
 Observations
-^^^^^^^^^^^^
+------------
 
 At a high level, this code is an improvement over *elex1/*, but it could
 still be much improved. We'll get to that in Phase 3, when we introduce
@@ -40,7 +40,7 @@ still be much improved. We'll get to that in Phase 3, when we introduce
 `packages <http://docs.python.org/2/tutorial/modules.html#packages>`__.
 
 Questions
-^^^^^^^^^
+---------
 
 -  What is \*\_\_init\_\_.py\* and why do we use it?
 -  In what order are test methods run?
@@ -48,7 +48,7 @@ Questions
 -  What other TestCase methods are available?
 
 Exercises
-^^^^^^^^^
+---------
 
 -  Install `nose <https://nose.readthedocs.org/en/latest/index.html>`__
    and run the tests. Try breaking a few tests and run them to see the
