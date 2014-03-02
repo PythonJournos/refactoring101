@@ -1,9 +1,6 @@
 refactoring101
 ==============
 
-.. figure:: http://i2.kym-cdn.com/photos/images/original/000/572/090/77f.jpg
-   :alt: Draw the rest of the owl
-
 Inspiration
 -----------
 
@@ -21,10 +18,10 @@ Inspiration
 Overview
 --------
 
-So you've written a few scripts that get the job done. The machine 
+So you've written a few scripts that get the job done. The machine
 does your bidding, but the initial euphoria has worn off.
 
-Bugs are cropping up. Data quirks are creeping in. Duplicate code is spreading like a 
+Bugs are cropping up. Data quirks are creeping in. Duplicate code is spreading like a
 virus across projects, or worse, inside the same project. Programs aren't `failing gracefully <http://en.wikipedia.org/wiki/Graceful_exit>`__.
 
 There *must* be a better way, but not sure what path to follow.
@@ -44,7 +41,7 @@ How To Use This Tutorial
 ------------------------
 
 The `Github repo <https://github.com/PythonJournos/refactoring101>`__ contains code samples demonstrating how to transform a
-complex, linear script into a modular, easier-to-maintain package. The code was written as a reference for the 
+complex, linear script into a modular, easier-to-maintain package. The code was written as a reference for the
 *Python: Beyond the Basics* class at `NICAR 2014 <http://ire.org/conferences/nicar-2014/>`__, but can also
 work as a stand-alone tutorial.
 
