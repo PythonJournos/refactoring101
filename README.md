@@ -16,8 +16,8 @@
 ## Overview
 
 This repo contains code samples demonstrating how to transform a complex, linear script into a modular, 
-easier-to-maintain package. The code is written as a reference for the *Python: Beyond the Basics* class 
-at [NICAR 2014][], but can also work as a stand-alone tutorial.
+easier-to-maintain package. The code was written as a reference for the *Python: Beyond the Basics* class 
+at [NICAR 2014][], but can also work as a stand-alone tutorial (check out our [main documentation site](http://refactoring-101.readthedocs.org/en/latest/)).
 
 The tutorial uses a small, [fake set of election results][] for demonstration purposes.
 
