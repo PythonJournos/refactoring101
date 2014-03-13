@@ -24,10 +24,10 @@ module into a legitimate Python package. The new directory structure is
     │       ├── test_parser.py
     │       └── test_summary.py
 
--  ***lib/*** contains re-usable bits of code.
--  ***scripts/*** contains...well..scripts that leverage our re-usable
+-  ``lib/`` contains re-usable bits of code.
+-  ``scripts/`` contains...well..scripts that leverage our re-usable
    code.
--  ***tests/*** contains tests for re-usable bits of code and related
+-  ``tests/`` contains tests for re-usable bits of code and related
    fixtures.
 
 Note that we did not change any of our functions. Mostly we just
