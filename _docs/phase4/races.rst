@@ -1,33 +1,29 @@
 Races have Candidates!
 ======================
 
-TODO: NEED BETTER TRANSTION HERE
-* need headline that transtions to basic
-  race info
-* Then lead into candidate housekeeping
+With the basics of our `Candidate` class out of the way, let's 
+move on to building out the `Race` class. This higher-level
+class will manage updates to our candidate instances, along with metadata 
+about the race itself such as election date and office/district.
 
-Races have a date, office, and possibly a district if it's a
-congressional office. They also, of course, have candidates. In *elex3*,
-the *lib/parsery.py* code managed candiates, ensuring that county-level
-results were assigned to the appropriate candidate.
+Recall that in *elex3*, the *lib/parsery.py* ensured that county-level results were assigned to the appropriate candidate.
+We'll now migrate that logic over to the `Race` class, along with a few other repsonsibilities:
 
-We'll now migrate that logic over to the Race class, along with a few
-other repsonsibilities:
-
--  Keep track of individual candidates and update their vote counts
--  Determine which, candidate, any, won the race
--  Track overall vote count in the race
+-  Tracking overall vote count for the race
+-  Updating candidates with new county-level votes
+-  Determining which candidate, if any, won the race
 
 Total votes
 -----------
 
-The Race class keep a running tally of all votes. This represnts
-the sum of all votes received by individual candidates.
+The *Race* class keeps a running tally of all votes. This figure is 
+the sum of all county-level votes received by individual candidates.
 
-Let's build out our initial *Race* class with an *add\_result* method
-that handles these updates. This should be pretty straightforward, and
-you'll notice that the tests mirror those used to perform the vote
-tallies on *Candidate* instances.
+Let's build out the *Race* class with basic metadata fields and an *add\_result* method
+that updates the total vote count.
+
+This should be pretty straight-forward, and you'll notice that the tests mirror those used to 
+perform vote tallies on *Candidate* instances.
 
 .. code:: python
 

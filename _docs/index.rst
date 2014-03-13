@@ -24,7 +24,7 @@ does your bidding, but the initial euphoria has worn off.
 Bugs are cropping up. Data quirks are creeping in. Duplicate code is spreading like a
 virus across projects, or worse, inside the same project. Programs aren't `failing gracefully <http://en.wikipedia.org/wiki/Graceful_exit>`__.
 
-There *must* be a better way, but not sure what path to follow.
+There *must* be a better way, but the path forward is not clear.
 
 If you're like us and have had that itchy feeling, this tutorial is for you.
 

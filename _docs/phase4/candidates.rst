@@ -9,7 +9,7 @@ What basic characteristics does a candidate have in the context of the
 
 Name, party and county election results jump out.
 
-A candidate also has seems like a natural place for data transforms and
+A candidate also seems like a natural place for data transforms and
 computations that now live in *lib/parser.py* and *lib/summary.py*:
 
 -  candidate name parsing
