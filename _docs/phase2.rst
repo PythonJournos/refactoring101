@@ -1,9 +1,9 @@
-Function breakdown
-==================
+Function breakdown and Testing Intro
+====================================
 
-In the *elex2/* directory, we've chopped up the original
-election\_results.py code into a bunch of functions and turned this code
-directory into a package by adding an \*\_\_init\_\_.py\* file.
+In the `elex2/ <https://github.com/PythonJournos/refactoring101/tree/master/elex2>`__
+directory, we've chopped up the original election\_results.py code into a bunch of functions and turned this code
+directory into a package by adding an \_\_init\_\_.py file.
 
 We've also added a suite of tests. This way we can methodically change
 the underlying code in later phases, while having greater confidence
@@ -42,7 +42,7 @@ still be much improved. We'll get to that in Phase 3, when we introduce
 Questions
 ---------
 
--  What is \*\_\_init\_\_.py\* and why do we use it?
+-  What is \_\_init\_\_.py and why do we use it?
 -  In what order are test methods run?
 -  What does the TestCase *setUp* method do?
 -  What other TestCase methods are available?
