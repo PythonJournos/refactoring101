@@ -16,8 +16,8 @@
 ## Overview
 
 This repo contains code samples demonstrating how to transform a complex, linear script into a modular, 
-easier-to-maintain package. The code was written as a reference for the *Python: Beyond the Basics* class 
-at [NICAR 2014][], but can also work as a stand-alone tutorial (check out our [main documentation site](http://refactoring-101.readthedocs.org/en/latest/)).
+easier-to-maintain package. The code is a teaching aide used in Python classes at [NICAR 2014][] and [NICAR 2015][], 
+but can also work as a stand-alone tutorial (check out our [main documentation site](http://refactoring-101.readthedocs.org/en/latest/)).
 
 The tutorial uses a small, [fake set of election results][] for demonstration purposes.
 
@@ -31,7 +31,8 @@ We also introduce unit testing as a strategy for writing programs that you can u
 Wondering how to use this tutorial or why the hell we called it *refactoring101*? The [FAQ][] has answers to 
 these and sundry other questions. Also, check out the [Resources][] page for wisdom from our tribal elders.
 
-[NICAR 2014]: http://ire.org/conferences/nicar-2014/
+[NICAR 2014]: https://ire.org/events-and-training/event/973/1107/
+[NICAR 2015]: http://www.ire.org/events-and-training/event/1494/1600/
 [fake set of election results]: https://docs.google.com/spreadsheet/pub?key=0AhhC0IWaObRqdGFkUW1kUmp2ZlZjUjdTYV9lNFJ5RHc&output=html
 [FAQ]: https://github.com/PythonJournos/refactoring101/wiki/FAQ
 [Resources]: https://github.com/PythonJournos/refactoring101/wiki/Resources
