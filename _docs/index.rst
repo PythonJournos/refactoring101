@@ -41,12 +41,11 @@ How To Use This Tutorial
 ------------------------
 
 The `Github repo <https://github.com/PythonJournos/refactoring101>`__ contains code samples demonstrating how to transform a
-complex, linear script into a modular, easier-to-maintain package. The code was written as a reference for the
-*Python: Beyond the Basics* class at `NICAR 2014 <http://ire.org/conferences/nicar-2014/>`__, but can also
-work as a stand-alone tutorial.
+complex, linear script into a modular, easier-to-maintain package. The code was written as a reference for Python classes at
+NICAR `2014 <https://ire.org/events-and-training/event/973/1107/>`__ and `2015 <http://www.ire.org/events-and-training/event/1494/1600/>`__,
+but can also be used as a stand-alone tutorial.
 
-We use a small, `fake set of election
-results <https://docs.google.com/spreadsheet/pub?key=0AhhC0IWaObRqdGFkUW1kUmp2ZlZjUjdTYV9lNFJ5RHc&output=html>`__
+We use a small, `fake set of election results <https://docs.google.com/spreadsheet/pub?key=0AhhC0IWaObRqdGFkUW1kUmp2ZlZjUjdTYV9lNFJ5RHc&output=html>`__
 for demonstration purposes. Project code evolves through four phases, each contained in a numbered
 *elex* directory in the `code repo <https://github.com/PythonJournos/refactoring101>`__.
 
@@ -63,7 +62,7 @@ Still have questions? Check out the :ref:`FAQ`, as well the :ref:`Resources` pag
 
 
 Table of Contents
------
+-----------------
 .. toctree::
    :maxdepth: 1
 
