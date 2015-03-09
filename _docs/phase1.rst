@@ -53,7 +53,7 @@ high-level design and flow of your program. Or if you're lucky enough to have a 
 use that to sketch out the initial steps of your program.
 
 Some folks also like writing `pseudocode <http://en.wikipedia.org/wiki/Pseudocode>`__,
-though beware the siren call's temptation to slip back into implementing "working" code 
+though beware the siren's call to slip back into implementing "working" code 
 (Python in particular makes this extremely easy).
 
     *Fun fact*: Jeremy and I are so enthusiastic about whiteboarding that we once sketched out a
