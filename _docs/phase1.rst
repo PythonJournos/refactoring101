@@ -62,7 +62,8 @@ though beware the siren call's temptation to slip back into implementing "workin
 Shred this code (on paper)
 --------------------------
 
-In this tutorial, we already have some ready-baked spaghetti code for you to slice and dice into smaller components.
+In this tutorial, we already have some ready-baked `spaghetti code <https://github.com/PythonJournos/refactoring101/blob/master/elex1/election_results.py>`__ 
+for you to slice and dice into smaller components.
 
 We encourage you to print the code on paper -- yes, dead trees! -- and use a marker to group code bits
 into separate functions. As you to try to make sense of the logic and data structures, it's a good idea to reference the 
