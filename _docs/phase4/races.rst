@@ -6,15 +6,15 @@ move on to building out the `Race` class. This higher-level
 class will manage updates to our candidate instances, along with metadata 
 about the race itself such as election date and office/district.
 
-Recall that in *elex3*, the *lib/parsery.py* ensured that county-level results were assigned to the appropriate candidate.
+Recall that in *elex3*, the *lib/parser.py* ensured that county-level results were assigned to the appropriate candidate.
 We'll now migrate that logic over to the `Race` class, along with a few other repsonsibilities:
 
 -  Tracking overall vote count for the race
 -  Updating candidates with new county-level votes
 -  Determining which candidate, if any, won the race
 
-Total votes
------------
+Metadata and Total votes
+------------------------
 
 The *Race* class keeps a running tally of all votes. This figure is 
 the sum of all county-level votes received by individual candidates.
@@ -70,8 +70,8 @@ method to make the tests pass.
         def add_result(self, result):
             self.total_votes += result['votes']
 
-Candidate updates
------------------
+Candidate Bookkeeping
+---------------------
 
 In earlier phases of the project, the parser code ensured that
 county-level results were grouped with the appropriate, unique candidate
@@ -188,8 +188,8 @@ count is correct.
     our hand at that issue in this tutorial and leave it as a study
     exercise for the reader.
 
-Winner
-------
+Assigning Winners
+-----------------
 
 We're now ready for the last major piece of the puzzle, namely,
 migrating the code that determines race winners. This logic was

@@ -9,12 +9,10 @@ We've also added a suite of tests. This way we can methodically change
 the underlying code in later phases, while having greater confidence
 that we haven't corrupted our summary numbers.
 
-We can't stress this step enough: Testing existing code is *the*
-critical first step in refactoring. If the code doesn't have tests,
-write some, at least for the most important bits of logic. Otherwise
-you're just `changing
-shit <http://hamletdarcy.blogspot.com/2009/06/forgotten-refactorings.html>`__
-(see Ray Ozzie).
+    **Note**: We can't stress this step enough: Testing existing code is *THE* critical first step in refactoring.
+
+If the code doesn't have tests, write some, at least for the most important bits of logic.
+Otherwise you're just `changing shit <http://hamletdarcy.blogspot.com/2009/06/forgotten-refactorings.html>`__.
 
 Fortunately, our code has a suite of `unit
 tests <http://docs.python.org/2/library/unittest.html>`__ for name
