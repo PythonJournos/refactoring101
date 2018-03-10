@@ -15,7 +15,7 @@ OUTPUT:
 
 """
 import csv
-import urllib
+import urllib.request as urllib
 from operator import itemgetter
 from collections import defaultdict
 from os.path import dirname, join
@@ -27,7 +27,7 @@ filename = join(dirname(dirname(__file__)), 'fake_va_elec_results.csv')
 urllib.urlretrieve(url, filename)
 
 # Create reader for ingesting CSV as array of dicts
-reader = csv.DictReader(open(filename, 'rb'))
+reader = csv.DictReader(open(filename, 'r'))
 
 # Use defaultdict to automatically create non-existent keys with an empty dictionary as the default value.
 # See https://pydocs2cn.readthedocs.org/en/latest/library/collections.html#defaultdict-objects
@@ -85,7 +85,7 @@ for race_key, cand_results in results.items():
         first['winner'] = 'X'
 
     # Get race metadata from one set of results
-    result = cand_results.values()[0][0]
+    result = list(cand_results.values())[0][0]
     # Add results to output
     summary[race_key] = {
         'date': result['date'],
@@ -98,7 +98,7 @@ for race_key, cand_results in results.items():
 
 # Write CSV of results
 outfile = join(dirname(__file__), 'summary_results.csv')
-with open(outfile, 'wb') as fh:
+with open(outfile, 'w') as fh:
     # We'll limit the output to cleanly parsed, standardized values
     fieldnames = [
         'date',
