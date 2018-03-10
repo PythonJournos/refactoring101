@@ -14,14 +14,14 @@ class TestSummaryResults(TestCase):
     # using a snapshot of that function's output?
     # A: To achieve better test isolation!
     
-    # Q: Why aren't reading in the JSON in a setUp method?
+    # Q: Why aren't we reading in the JSON in a setUp method?
     # A: setUp is called before each test method. This ensures we only
     # incur the overhead of reading in the JSON once. In python2.7 or newer,
     # you should use the setUpClass method instead of a class attribute.
     # http://docs.python.org/2/library/unittest.html#unittest.TestCase.setUpClass
 
     # We will, however, use the setUp method to call the summarize
-    # funciton afresh before each of our test methods.
+    # function afresh before each of our test methods.
     def setUp(self):
         results = summarize(self.SAMPLE_RESULTS)
         self.race = results['President']
